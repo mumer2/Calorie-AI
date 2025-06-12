@@ -10,6 +10,7 @@ import HomeScreen from './screens/HomeScreen';
 import FitnessScreen from './screens/FitnessScreen';
 import DietPlanScreen from './screens/DietPlanScreen';
 import ExerciseScreen from './screens/ExerciseScreen';
+import SubscribeScreen from './screens/SubscribeScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,8 @@ export default function App() {
         <Stack.Screen name="Fitness" component={FitnessScreen} />
         <Stack.Screen name="Diet" component={DietPlanScreen} />
         <Stack.Screen name="Exercise" component={ExerciseScreen} />
+        <Stack.Screen name="Subscribe" component={SubscribeScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

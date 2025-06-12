@@ -1,4 +1,3 @@
-// screens/OnboardingScreen.js
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
@@ -17,7 +16,16 @@ export default function OnboardingScreen({ navigation }) {
   const [name, setName] = useState('');
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  // ⏳ Check if name already exists → skip onboarding if so
   useEffect(() => {
+    const checkName = async () => {
+      const storedName = await AsyncStorage.getItem('userName');
+      if (storedName) {
+        navigation.replace('Home', { name: storedName });
+      }
+    };
+    checkName();
+
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
@@ -25,10 +33,12 @@ export default function OnboardingScreen({ navigation }) {
     }).start();
   }, []);
 
+  // ✅ Save name and navigate
   const handleNext = async () => {
-    if (name.trim()) {
-      await AsyncStorage.setItem('userName', name.trim());
-      navigation.replace('Home');
+    const trimmedName = name.trim();
+    if (trimmedName) {
+      await AsyncStorage.setItem('userName', trimmedName);
+      navigation.replace('Home', { name: trimmedName });
     }
   };
 
@@ -42,7 +52,7 @@ export default function OnboardingScreen({ navigation }) {
           source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1048/1048953.png' }}
           style={styles.image}
         />
-        <Text style={styles.title}>Welcome to FitLife 💪</Text>
+        <Text style={styles.title}>Welcome to Calorie AI</Text>
         <Text style={styles.subtitle}>Let's start your fitness journey</Text>
 
         <TextInput

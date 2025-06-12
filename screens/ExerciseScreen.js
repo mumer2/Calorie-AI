@@ -1,6 +1,15 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
 import { Video } from 'expo-av';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const exercises = [
   {
@@ -18,7 +27,7 @@ const exercises = [
     video: require('../assets/videos/Planks.mp4'),
     duration: '45 sec',
   },
-   {
+  {
     name: 'Jumping Jacks',
     video: require('../assets/videos/Jumping Jacks.mp4'),
     duration: '30 sec',
@@ -26,6 +35,32 @@ const exercises = [
 ];
 
 export default function ExerciseScreen() {
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkSubscription = async () => {
+        const subscribed = await AsyncStorage.getItem('isSubscribed');
+        if (subscribed !== 'true') {
+          navigation.navigate('Subscribe');
+        } else {
+          setLoading(false);
+        }
+      };
+      checkSubscription();
+    }, [])
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0e4d92" />
+        <Text style={{ marginTop: 10, color: '#444' }}>Checking subscription...</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>🏋️ Daily Workout</Text>
@@ -58,6 +93,12 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#f0f8ff',
     padding: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f8ff',
   },
   title: {
     fontSize: 24,

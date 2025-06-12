@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,10 @@ import {
   StyleSheet,
   Animated,
   Image,
+  ActivityIndicator,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const meals = [
   {
@@ -49,6 +52,22 @@ const meals = [
 
 export default function DietPlanScreen() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkSubscription = async () => {
+        const subscribed = await AsyncStorage.getItem('isSubscribed');
+        if (subscribed !== 'true') {
+          navigation.navigate('Subscribe');
+        } else {
+          setLoading(false);
+        }
+      };
+      checkSubscription();
+    }, [])
+  );
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -58,22 +77,30 @@ export default function DietPlanScreen() {
     }).start();
   }, []);
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0e4d92" />
+        <Text style={{ marginTop: 10, color: '#444' }}>Checking subscription...</Text>
+      </View>
+    );
+  }
+
   return (
     <Animated.ScrollView style={[styles.container, { opacity: fadeAnim }]}>
       <Text style={styles.title}>🥗 Recommended Diet Plan</Text>
       {meals.map((meal, index) => (
-       <View key={index} style={styles.card}>
-  <View style={styles.mealRow}>
-    <View style={{ flex: 1 }}>
-      <Text style={styles.cardTitle}>{meal.title}</Text>
-      {meal.items.map((item, idx) => (
-        <Text key={idx} style={styles.item}>• {item}</Text>
-      ))}
-    </View>
-    <Image source={meal.image} style={styles.mealImage} />
-  </View>
-</View>
-
+        <View key={index} style={styles.card}>
+          <View style={styles.mealRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.cardTitle}>{meal.title}</Text>
+              {meal.items.map((item, idx) => (
+                <Text key={idx} style={styles.item}>• {item}</Text>
+              ))}
+            </View>
+            <Image source={meal.image} style={styles.mealImage} />
+          </View>
+        </View>
       ))}
     </Animated.ScrollView>
   );
@@ -83,6 +110,12 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#f0f8ff',
     padding: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f8ff',
   },
   title: {
     fontSize: 32,
@@ -103,15 +136,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
-  cardContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  textContent: {
-    flex: 1,
-    paddingRight: 10,
-  },
   cardTitle: {
     fontSize: 20,
     fontWeight: '600',
@@ -127,10 +151,10 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 8,
-  marginLeft: 12,
+    marginLeft: 12,
   },
   mealRow: {
-  flexDirection: 'row',
-  alignItems: 'center',
-},
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });

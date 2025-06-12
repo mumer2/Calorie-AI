@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "calorie-ai",
+    "name": "Calorie AI",
     "slug": "calorie-ai",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,14 +15,26 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.calorieai.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/Logo.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": [
+        "ACTIVITY_RECOGNITION",
+        "INTERNET",
+        "CAMERA"
+      ],
+      "minSdkVersion": 21,
       "edgeToEdgeEnabled": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "068168ac-f7a3-4108-bb48-dd09aa99e918"
+      }
     }
   }
 }
