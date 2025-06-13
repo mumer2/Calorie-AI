@@ -11,19 +11,18 @@ import {
   StatusBar,
   AppState,
   Dimensions,
-  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Pedometer } from "expo-sensors";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
+import { Alert } from "react-native";
 import StepCounterScreen from "./StepCounterScreen";
 
 const STEP_GOAL = 10000;
 const { width } = Dimensions.get("window");
 
-export default function HomeScreen({ navigation }) {
-  const [name, setName] = useState('');
+export default function HomeScreen({ navigation, name }) {
   const [steps, setSteps] = useState(0);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showSubscriptionMenu, setShowSubscriptionMenu] = useState(false);
@@ -32,13 +31,11 @@ export default function HomeScreen({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      const fetchUserData = async () => {
-        const storedName = await AsyncStorage.getItem("userName");
+      const fetchSubStatus = async () => {
         const status = await AsyncStorage.getItem("isSubscribed");
-        if (storedName) setName(storedName);
         setIsSubscribed(status === "true");
       };
-      fetchUserData();
+      fetchSubStatus();
     }, [])
   );
 
@@ -97,10 +94,10 @@ export default function HomeScreen({ navigation }) {
     }).start();
   }, []);
 
-  // const resetName = async () => {
-  //   await AsyncStorage.removeItem("userName");
-  //   navigation.replace("Onboarding");
-  // };
+  const resetName = async () => {
+    await AsyncStorage.removeItem("userName");
+    navigation.replace("Onboarding");
+  };
 
   const handleNavigate = (screen) => {
     navigation.navigate(screen);
@@ -150,23 +147,23 @@ export default function HomeScreen({ navigation }) {
       image: require("../assets/exercise.png"),
       screen: isSubscribed ? "Exercise" : "Subscribe",
     },
-    {
-      title: "Reminders",
-      image: require("../assets/Reminder.png"),
-      screen: "Reminders",
-    },
   ];
 
+  const progress = Math.min((steps / STEP_GOAL) * 100, 100);
+
   return (
-    <View style={{ flex: 1, backgroundColor: "#f0f8ff" }}>
-      {/* Fixed Top Bar */}
-      <SafeAreaView style={styles.fixedTopBarContainer}>
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
+        <StatusBar backgroundColor="#f0f8ff" barStyle="dark-content" />
+
+        {/* Top Bar with Refresh and Subscription Tab */}
         <View style={styles.topBar}>
-          <Text style={styles.topBarText}>👋 Hi, {name || "Guest"}</Text>
+          <Text style={styles.topBarText}>👋 Hi, {name}</Text>
           <View style={styles.topRightControls}>
-            {/* <TouchableOpacity onPress={resetName} style={{ marginRight: 12 }}>
+            <TouchableOpacity onPress={resetName} style={{ marginRight: 12 }}>
               <MaterialIcons name="refresh" size={24} color="#0e4d92" />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
+
             <View>
               <TouchableOpacity onPress={handleToggleSubscriptionMenu}>
                 <MaterialIcons
@@ -175,6 +172,7 @@ export default function HomeScreen({ navigation }) {
                   color={isSubscribed ? "#0e4d92" : "#aaa"}
                 />
               </TouchableOpacity>
+
               {showSubscriptionMenu && (
                 <View style={styles.subscriptionMenu}>
                   {isSubscribed ? (
@@ -191,19 +189,18 @@ export default function HomeScreen({ navigation }) {
             </View>
           </View>
         </View>
-      </SafeAreaView>
-
-      {/* Scrollable Content */}
-      <ScrollView
-        contentContainerStyle={{
-          paddingHorizontal: 20,
-          paddingTop: 100,
-          paddingBottom: 40,
-        }}
-      >
         <StepCounterScreen />
 
         <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+          {/* <View style={styles.stepBox}>
+          <Text style={styles.stepTitle}>👣 Steps Today</Text>
+          <Text style={styles.stepCount}>{steps}</Text>
+          <View style={styles.progressBar}>
+            <View style={[styles.progress, { width: `${progress}%` }]} />
+          </View>
+          <Text style={styles.goalText}>Goal: {STEP_GOAL} steps</Text>
+        </View> */}
+
           <Text style={styles.sectionTitle}>Your Fitness Journey</Text>
 
           <View style={styles.row}>
@@ -225,58 +222,42 @@ export default function HomeScreen({ navigation }) {
             ))}
           </View>
 
- <View style={styles.row}>
-            {collections.slice(2).map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.card,
-                  styles.halfCard,
-                  index === 1 && { marginRight: 0 },
-                ]}
-                onPress={() => handleNavigate(item.screen)}
-              >
-                <Image source={item.image} style={styles.cardImageTop} />
-                <Text style={styles.cardTextCentered}>
-                  {item.title} {item.screen === "Subscribe" ? "🔒" : ""}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-
-          {/* {collections.slice(2).map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.card, styles.halfCard,]}
-              onPress={() => handleNavigate(item.screen)}
-            >
-              <Image source={item.image} style={styles.cardImageTop} />
-              <Text style={styles.cardTextCentered}>{item.title}</Text>
-            </TouchableOpacity>
-          ))} */}
+          <TouchableOpacity
+            style={[styles.card, styles.fullCard]}
+            onPress={() => handleNavigate(collections[2].screen)}
+          >
+            <Image source={collections[2].image} style={styles.cardImageTop} />
+            <Text style={styles.cardTextCentered}>
+              {collections[2].title}{" "}
+              {collections[2].screen === "Subscribe" ? "🔒" : ""}
+            </Text>
+          </TouchableOpacity>
         </Animated.View>
-      </ScrollView>
-    </View>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  fixedTopBarContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 100,
+  container: {
+    flex: 1,
     backgroundColor: "#f0f8ff",
-    paddingHorizontal: 20,
     paddingTop: StatusBar.currentHeight || 40,
+    paddingHorizontal: 20,
+  },
+  scroll: {
+    padding: 20,
+    paddingBottom: 60,
+    backgroundColor: "#f4f9ff",
+    flexGrow: 1,
+    alignItems: "center",
   },
   topBar: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 20,
+    zIndex: 10,
   },
   topBarText: {
     fontSize: 22,
@@ -304,6 +285,41 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     color: "#0e4d92",
     fontWeight: "500",
+  },
+  stepBox: {
+    backgroundColor: "#e1f5fe",
+    padding: 20,
+    borderRadius: 16,
+    alignItems: "center",
+    marginBottom: 30,
+    elevation: 3,
+  },
+  stepTitle: {
+    fontSize: 18,
+    color: "#007acc",
+    marginBottom: 8,
+  },
+  stepCount: {
+    fontSize: 36,
+    fontWeight: "bold",
+    color: "#004d40",
+  },
+  progressBar: {
+    width: "100%",
+    height: 10,
+    backgroundColor: "#cce7ff",
+    borderRadius: 8,
+    marginTop: 10,
+    marginBottom: 6,
+  },
+  progress: {
+    height: "100%",
+    backgroundColor: "#007acc",
+    borderRadius: 8,
+  },
+  goalText: {
+    fontSize: 14,
+    color: "#555",
   },
   sectionTitle: {
     fontSize: 20,

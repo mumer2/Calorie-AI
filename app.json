@@ -23,9 +23,11 @@
       "permissions": [
         "ACTIVITY_RECOGNITION",
         "INTERNET",
+        "CAMERA",
+        "ACTIVITY_RECOGNITION",
+        "INTERNET",
         "CAMERA"
       ],
-      "minSdkVersion": 21,
       "edgeToEdgeEnabled": true
     },
     "web": {
@@ -35,6 +37,16 @@
       "eas": {
         "projectId": "068168ac-f7a3-4108-bb48-dd09aa99e918"
       }
+    },
+    "plugins": [
+      "expo-web-browser",
+      "expo-video"
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/068168ac-f7a3-4108-bb48-dd09aa99e918"
     }
   }
 }

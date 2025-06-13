@@ -16,12 +16,12 @@ export default function OnboardingScreen({ navigation }) {
   const [name, setName] = useState('');
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  // ⏳ Check if name already exists → skip onboarding if so
+  // ⏳ Skip onboarding if name already exists
   useEffect(() => {
     const checkName = async () => {
       const storedName = await AsyncStorage.getItem('userName');
       if (storedName) {
-        navigation.replace('Home', { name: storedName });
+        navigation.replace('MainTabs'); // ✅ navigate to MainTabs instead of Home
       }
     };
     checkName();
@@ -33,12 +33,12 @@ export default function OnboardingScreen({ navigation }) {
     }).start();
   }, []);
 
-  // ✅ Save name and navigate
+  // ✅ Save name and navigate to MainTabs
   const handleNext = async () => {
     const trimmedName = name.trim();
     if (trimmedName) {
       await AsyncStorage.setItem('userName', trimmedName);
-      navigation.replace('Home', { name: trimmedName });
+      navigation.replace('MainTabs');
     }
   };
 
