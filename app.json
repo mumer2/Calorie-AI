@@ -26,7 +26,9 @@
         "CAMERA",
         "ACTIVITY_RECOGNITION",
         "INTERNET",
-        "CAMERA"
+        "CAMERA",
+        "NOTIFICATIONS",
+        "WAKE_LOCK"
       ],
       "edgeToEdgeEnabled": true
     },
@@ -40,13 +42,16 @@
     },
     "plugins": [
       "expo-web-browser",
-      "expo-video"
+      "expo-video",
+      "expo-notifications",
+      "expo-localization"
     ],
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/068168ac-f7a3-4108-bb48-dd09aa99e918"
-    }
+    },
+    "owner": "m_umer_m"
   }
 }

@@ -59,7 +59,10 @@ export default function ReminderScreen() {
         body: text,
         sound: 'default',
       },
-      trigger: date,
+       trigger: {
+        type: 'date',
+        date: date, // ✅ fixed trigger format
+      },
     });
   };
 

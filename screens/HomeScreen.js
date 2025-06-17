@@ -155,6 +155,16 @@ export default function HomeScreen({ navigation }) {
       image: require("../assets/Reminder.png"),
       screen: "Reminders",
     },
+      {
+      title: "Trainings",
+      image: require("../assets/classroom.png"),
+      screen: "Training",
+    },
+     {
+      title: "Progress Report",
+      image: require("../assets/progress-report.png"),
+      screen: "ProgressReport",
+    },
   ];
 
   return (
@@ -226,7 +236,7 @@ export default function HomeScreen({ navigation }) {
           </View>
 
  <View style={styles.row}>
-            {collections.slice(2).map((item, index) => (
+            {collections.slice(2,4).map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={[
@@ -243,7 +253,24 @@ export default function HomeScreen({ navigation }) {
               </TouchableOpacity>
             ))}
           </View>
-
+ <View style={styles.row}>
+            {collections.slice(4).map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.card,
+                  styles.halfCard,
+                  index === 1 && { marginRight: 0 },
+                ]}
+                onPress={() => handleNavigate(item.screen)}
+              >
+                <Image source={item.image} style={styles.cardImageTop} />
+                <Text style={styles.cardTextCentered}>
+                  {item.title} {item.screen === "Subscribe" ? "🔒" : ""}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
           {/* {collections.slice(2).map((item, index) => (
             <TouchableOpacity
@@ -277,6 +304,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
+    marginTop: 2,
   },
   topBarText: {
     fontSize: 22,

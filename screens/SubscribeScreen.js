@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
 
@@ -19,19 +26,25 @@ export default function SubscribeScreen({ navigation }) {
     try {
       setLoading(true);
 
-      const response = await fetch('http://192.168.0.3:3000/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: 19900, currency: 'inr', payment_method: 'alipay' }),
-      });
+      const response = await fetch(
+        'https://calorie-ai-production.up.railway.app/create-payment-intent',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: 19900, // ¥199.00
+            currency: 'cny', // Alipay supports only 'cny' or 'hkd'
+          }),
+        }
+      );
 
       const data = await response.json();
 
-      if (!data || !data.client_secret || !data.url) {
+      if (!data || !data.clientSecret || !data.nextActionUrl) {
         throw new Error('Invalid response from server');
       }
 
-      const result = await WebBrowser.openBrowserAsync(data.url);
+      const result = await WebBrowser.openBrowserAsync(data.nextActionUrl);
 
       if (result.type === 'opened') {
         Alert.alert('Payment Initiated', 'Complete the payment in the Alipay page.');
@@ -75,7 +88,7 @@ export default function SubscribeScreen({ navigation }) {
               {loading ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
-                <Text style={styles.buttonText}>Subscribe - ₹199 via Alipay</Text>
+                <Text style={styles.buttonText}>Subscribe - ¥199 via Alipay</Text>
               )}
             </TouchableOpacity>
           </>
