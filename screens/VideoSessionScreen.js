@@ -16,7 +16,7 @@ export default function VideoSessionScreen() {
     try {
       // Make sure this endpoint works in your browser first
       const response = await fetch(
-        'https://calorie-ai-backend.up.railway.app/livekit-token?room=groupRoom&identity=umer'
+        'calorie-ai-production-6142.up.railway.app/livekit-token?room=groupRoom&identity=umer'
       );
 
       if (!response.ok) {
@@ -30,7 +30,7 @@ export default function VideoSessionScreen() {
       }
 
       // ✅ Update the room URL to your LiveKit UI deployed link
-      const room = `https://livekit-ui-123y-git-main-mumer2s-projects.vercel.app/room/groupRoom?token=${data.token}`;
+      const room = `https://livekit-ui-git-main-mumer2s-projects.vercel.app/room/groupRoom?token=${data.token}`;
 
       setRoomURL(room);
     } catch (err) {
