@@ -1,5 +1,4 @@
 // App.js
-import 'expo-dev-client';
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -25,6 +24,7 @@ import TrainingScreen from "./screens/TrainingScreen";
 import TrainingVideoScreen from "./screens/TrainingVideoScreen";
 import TrainingDetailScreen from "./screens/TrainingDetailScreen";
 import ProgressReportScreen from "./screens/ProgressReportScreen";
+import VideoSessionScreen from "./screens/VideoSessionScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -105,6 +105,7 @@ export default function App() {
     component={ProgressReportScreen}
     options={{ title: 'Progress Report' }}
   />
+<Stack.Screen name="VideoCall" component={VideoSessionScreen} />
             </>
           )}
         </Stack.Navigator>

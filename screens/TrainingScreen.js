@@ -9,7 +9,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Video } from 'expo-video';
+import { Video } from 'expo-av';
+
 
 const trainingModules = [
   {

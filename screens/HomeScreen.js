@@ -19,6 +19,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import StepCounterScreen from "./StepCounterScreen";
 
+
 const STEP_GOAL = 10000;
 const { width } = Dimensions.get("window");
 
@@ -165,6 +166,11 @@ export default function HomeScreen({ navigation }) {
       image: require("../assets/progress-report.png"),
       screen: "ProgressReport",
     },
+      {
+      title: "Live Video Training",
+      image: require("../assets/live.png"),
+      screen: "VideoCall",
+    },
   ];
 
   return (
@@ -254,7 +260,27 @@ export default function HomeScreen({ navigation }) {
             ))}
           </View>
  <View style={styles.row}>
-            {collections.slice(4).map((item, index) => (
+            {collections.slice(4,6).map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.card,
+                  styles.halfCard,
+                  index === 1 && { marginRight: 0 },
+                ]}
+                onPress={() => handleNavigate(item.screen)}
+              >
+                <Image source={item.image} style={styles.cardImageTop} />
+                <Text style={styles.cardTextCentered}>
+                  {item.title} {item.screen === "Subscribe" ? "🔒" : ""}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+
+           <View style={styles.row}>
+            {collections.slice(6).map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={[

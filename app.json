@@ -44,7 +44,8 @@
       "expo-web-browser",
       "expo-video",
       "expo-notifications",
-      "expo-localization"
+      "expo-localization",
+      "expo-audio"
     ],
     "runtimeVersion": {
       "policy": "appVersion"

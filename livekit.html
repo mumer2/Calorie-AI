@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LiveKit Call</title>
+</head>
+<body style="margin:0;">
+  <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.min.js"></script>
+  <video id="video" autoplay playsinline muted></video>
+  <script>
+    const url = 'wss://your-livekit-server.com'; // your LiveKit server
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    LiveKit.connect(url, token).then(room => {
+      room.on('trackSubscribed', (track, pub, participant) => {
+        if (track.kind === 'video') {
+          const el = track.attach();
+          document.body.appendChild(el);
+        }
+      });
+
+      room.localParticipant.setCameraEnabled(true);
+      room.localParticipant.setMicrophoneEnabled(true);
+    });
+  </script>
+</body>
+</html>
