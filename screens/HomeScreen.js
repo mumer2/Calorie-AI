@@ -166,10 +166,10 @@ export default function HomeScreen({ navigation }) {
       image: require("../assets/progress-report.png"),
       screen: "ProgressReport",
     },
-      {
-      title: "Live Video Training",
+    {
+      title: "Live Video",
       image: require("../assets/live.png"),
-      screen: "VideoCall",
+      screen: "Jitsi",
     },
   ];
 
@@ -279,7 +279,7 @@ export default function HomeScreen({ navigation }) {
           </View>
 
 
-           <View style={styles.row}>
+<View style={styles.row}>
             {collections.slice(6).map((item, index) => (
               <TouchableOpacity
                 key={index}
@@ -297,7 +297,6 @@ export default function HomeScreen({ navigation }) {
               </TouchableOpacity>
             ))}
           </View>
-
           {/* {collections.slice(2).map((item, index) => (
             <TouchableOpacity
               key={index}

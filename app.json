@@ -28,7 +28,8 @@
         "INTERNET",
         "CAMERA",
         "NOTIFICATIONS",
-        "WAKE_LOCK"
+        "WAKE_LOCK",
+        "RECORD_AUDIO"
       ],
       "edgeToEdgeEnabled": true
     },

@@ -24,7 +24,7 @@ import TrainingScreen from "./screens/TrainingScreen";
 import TrainingVideoScreen from "./screens/TrainingVideoScreen";
 import TrainingDetailScreen from "./screens/TrainingDetailScreen";
 import ProgressReportScreen from "./screens/ProgressReportScreen";
-import VideoSessionScreen from "./screens/VideoSessionScreen";
+import JitsiScreen from "./screens/JitsiScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -100,12 +100,12 @@ export default function App() {
                 options={{ title: "Training Detail" }}
               />
 
-               <Stack.Screen
-    name="ProgressReport"
-    component={ProgressReportScreen}
-    options={{ title: 'Progress Report' }}
-  />
-<Stack.Screen name="VideoCall" component={VideoSessionScreen} />
+              <Stack.Screen
+                name="ProgressReport"
+                component={ProgressReportScreen}
+                options={{ title: "Progress Report" }}
+              />
+              <Stack.Screen name="Jitsi" component={JitsiScreen} />
             </>
           )}
         </Stack.Navigator>
