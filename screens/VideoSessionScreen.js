@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  Alert,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 
@@ -14,9 +13,8 @@ export default function VideoSessionScreen() {
 
   const fetchToken = async () => {
     try {
-      // Make sure this endpoint works in your browser first
       const response = await fetch(
-        'calorie-ai-production-6142.up.railway.app/livekit-token?room=groupRoom&identity=umer'
+        'https://calorieai-backend.netlify.app/api/livekit-token?room=groupRoom&identity=umer'
       );
 
       if (!response.ok) {
@@ -29,9 +27,7 @@ export default function VideoSessionScreen() {
         throw new Error('No token received from backend');
       }
 
-      // ✅ Update the room URL to your LiveKit UI deployed link
-      const room = `https://livekit-ui-git-main-mumer2s-projects.vercel.app/room/groupRoom?token=${data.token}`;
-
+      const room = `https://livekit-ui-app.netlify.app/room/groupRoom?token=${data.token}`;
       setRoomURL(room);
     } catch (err) {
       console.error('❌ Token fetch failed:', err.message);
@@ -54,15 +50,25 @@ export default function VideoSessionScreen() {
   }
 
   if (!roomURL) {
-    return (
-      <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#0e4d92" />
-        <Text style={{ marginTop: 10 }}>Connecting to Live Session...</Text>
-      </View>
-    );
-  }
+  return (
+    <View style={styles.loader}>
+      <ActivityIndicator size="large" color="#0e4d92" />
+      <Text style={{ marginTop: 10 }}>Connecting to Live Session...</Text>
+    </View>
+  );
+}
 
-  return <WebView source={{ uri: roomURL }} style={{ flex: 1 }} />;
+return (
+  <WebView
+    source={{ uri: roomURL }}
+    startInLoadingState
+    renderLoading={() => (
+      <ActivityIndicator size="large" color="#0e4d92" style={{ marginTop: 50 }} />
+    )}
+    style={{ flex: 1 }}
+  />
+);
+
 }
 
 const styles = StyleSheet.create({
