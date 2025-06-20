@@ -26,7 +26,7 @@ const trainingModules = [
       },
       {
         text: 'Perform 20 lunges (10 per leg)',
-        video: require('../assets/videos/Push Ups.mp4'),
+        video: require('../assets/videos/PushUps.mp4'),
       },
       {
         text: '10 calf raises on a step',
@@ -34,7 +34,7 @@ const trainingModules = [
       },
       {
         text: 'Hold a wall sit for 30 seconds',
-        video: require('../assets/videos/Jumping Jacks.mp4'),
+        video: require('../assets/videos/JumpingJacks.mp4'),
       },
     ],
   },
@@ -45,9 +45,9 @@ const trainingModules = [
         previewImage: require('../assets//trainings/ExercisePlan.jpeg'),
     description: 'Boost fitness with this full-body session.',
     steps: [
-      { text: '10 pushups', video: require('../assets/videos/Push Ups.mp4') },
+      { text: '10 pushups', video: require('../assets/videos/PushUps.mp4') },
       { text: '15 squats', video: require('../assets/videos/Squats.mp4') },
-      { text: '20 jumping jacks', video: require('../assets/videos/Jumping Jacks.mp4') },
+      { text: '20 jumping jacks', video: require('../assets/videos/JumpingJacks.mp4') },
       { text: '30-second plank', video: require('../assets/videos/Planks.mp4') },
     ],
   },
@@ -106,7 +106,7 @@ export default function TrainingScreen() {
   );
 }
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f8ff', padding: 16 },
+  container: { flex: 1, backgroundColor: '#f0f8ff', padding: 16},
   header: {
     fontSize: 24,
     fontWeight: 'bold',

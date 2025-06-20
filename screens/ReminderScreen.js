@@ -184,7 +184,7 @@ export default function ReminderScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f8ff', padding: 20 },
+  container: { flex: 1, backgroundColor: '#f0f8ff', padding: 20,marginTop: 20 },
   title: {
     fontSize: 22,
     fontWeight: 'bold',

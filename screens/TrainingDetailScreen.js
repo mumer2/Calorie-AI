@@ -9,7 +9,7 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import { Video } from 'expo-video';
+import { Video } from 'expo-av';
 
 // Import static cover images
 import legCover from '../assets/trainings/Leg.jpeg';

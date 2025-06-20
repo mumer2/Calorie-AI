@@ -33,7 +33,7 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24 },
+  container: { flex: 1, padding: 24,marginTop: 20 },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
   input: {
     borderWidth: 1,

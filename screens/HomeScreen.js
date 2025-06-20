@@ -141,16 +141,27 @@ export default function HomeScreen({ navigation }) {
       image: require("../assets/fitness.png"),
       screen: "Fitness",
     },
-    {
+      {
       title: "Diet Plan",
       image: require("../assets/diet.png"),
-      screen: isSubscribed ? "Diet" : "Subscribe",
+      screen:  "Diet" ,
     },
+    // {
+    //   title: "Diet Plan",
+    //   image: require("../assets/diet.png"),
+    //   screen: isSubscribed ? "Diet" : "Subscribe",
+    // },
     {
-      title: "Daily Exercise",
-      image: require("../assets/exercise.png"),
-      screen: isSubscribed ? "Exercise" : "Subscribe",
-    },
+  title: "Daily Exercise",
+  image: require("../assets/exercise.png"),
+  screen: "Exercise", // 🔓 Always accessible
+},
+
+    // {
+    //   title: "Daily Exercise",
+    //   image: require("../assets/exercise.png"),
+    //   screen: isSubscribed ? "Exercise" : "Subscribe",
+    // },
     {
       title: "Reminders",
       image: require("../assets/Reminder.png"),
@@ -170,6 +181,11 @@ export default function HomeScreen({ navigation }) {
       title: "Live Video",
       image: require("../assets/live.png"),
       screen: "Jitsi",
+    },
+     {
+      title: "AI Chat",
+      image: require("../assets/live.png"),
+      screen: "AIChat",
     },
   ];
 
@@ -240,8 +256,26 @@ export default function HomeScreen({ navigation }) {
               </TouchableOpacity>
             ))}
           </View>
+<View style={styles.row}>
+  {collections.slice(2, 4).map((item, index) => (
+    <TouchableOpacity
+      key={index}
+      style={[
+        styles.card,
+        styles.halfCard,
+        index === 1 && { marginRight: 0 },
+      ]}
+      onPress={() => handleNavigate(item.screen)} // 🔓 No restriction now
+    >
+      <Image source={item.image} style={styles.cardImageTop} />
+      <Text style={styles.cardTextCentered}>
+        {item.title}
+      </Text>
+    </TouchableOpacity>
+  ))}
+</View>
 
- <View style={styles.row}>
+ {/* <View style={styles.row}>
             {collections.slice(2,4).map((item, index) => (
               <TouchableOpacity
                 key={index}
@@ -258,7 +292,7 @@ export default function HomeScreen({ navigation }) {
                 </Text>
               </TouchableOpacity>
             ))}
-          </View>
+          </View> */}
  <View style={styles.row}>
             {collections.slice(4,6).map((item, index) => (
               <TouchableOpacity
@@ -280,7 +314,7 @@ export default function HomeScreen({ navigation }) {
 
 
 <View style={styles.row}>
-            {collections.slice(6).map((item, index) => (
+            {collections.slice(6,8).map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={[
