@@ -184,7 +184,7 @@ export default function HomeScreen({ navigation }) {
     },
      {
       title: "AI Chat",
-      image: require("../assets/live.png"),
+      image: require("../assets/live-chat.png"),
       screen: "AIChat",
     },
   ];
