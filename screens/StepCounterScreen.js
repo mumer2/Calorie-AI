@@ -1,32 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Pedometer } from 'expo-sensors';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useNavigation } from '@react-navigation/native';
 
 export default function StepCounterScreen() {
   const [stepCount, setStepCount] = useState(0);
   const [isAvailable, setIsAvailable] = useState('checking');
-  const navigation = useNavigation(); // ✅ correct hook used here
+  const navigation = useNavigation();
 
   const dailyGoal = 10000;
-  const today = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
     checkPedometer();
-    loadTodaySteps();
+    fetchTodaySteps();
 
-    const subscription = Pedometer.watchStepCount(result => {
-      setStepCount(prev => prev + result.steps);
-    });
+    // Optional: Refresh every 30 seconds
+    const interval = setInterval(() => {
+      fetchTodaySteps();
+    }, 30000); // 30 seconds
 
-    return () => subscription.remove();
+    return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    saveTodaySteps();
-  }, [stepCount]);
 
   const checkPedometer = async () => {
     try {
@@ -37,35 +32,16 @@ export default function StepCounterScreen() {
     }
   };
 
-  const loadTodaySteps = async () => {
+  const fetchTodaySteps = async () => {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0); // start of today
+    const end = new Date();
+
     try {
-      const stored = await AsyncStorage.getItem('stepHistory');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        const todayEntry = parsed.find(entry => entry.date === today);
-        if (todayEntry) setStepCount(todayEntry.steps);
-      }
-    } catch (e) {
-      console.log('Failed to load step history:', e);
-    }
-  };
-
-  const saveTodaySteps = async () => {
-    try {
-      const stored = await AsyncStorage.getItem('stepHistory');
-      let updated = [];
-
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        const filtered = parsed.filter(entry => entry.date !== today);
-        updated = [...filtered, { date: today, steps: stepCount }];
-      } else {
-        updated = [{ date: today, steps: stepCount }];
-      }
-
-      await AsyncStorage.setItem('stepHistory', JSON.stringify(updated));
-    } catch (e) {
-      console.log('Failed to save step history:', e);
+      const result = await Pedometer.getStepCountAsync(start, end);
+      setStepCount(result.steps);
+    } catch (error) {
+      console.log('Failed to fetch step count:', error);
     }
   };
 
@@ -73,7 +49,7 @@ export default function StepCounterScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🚶 Live Step Tracker</Text>
+      <Text style={styles.title}>🚶 Step Tracker</Text>
       <Text style={styles.status}>Pedometer: {isAvailable}</Text>
 
       {isAvailable === 'checking' ? (
@@ -97,13 +73,12 @@ export default function StepCounterScreen() {
             )}
           </AnimatedCircularProgress>
 
-        <View style={styles.goalRow}>
-  <Text style={styles.goal}>Goal: {dailyGoal} steps</Text>
-  <TouchableOpacity onPress={() => navigation.navigate('StepHistory')}>
-    <Text style={styles.historyIcon}>📊</Text>
-  </TouchableOpacity>
-</View>
-
+          <View style={styles.goalRow}>
+            <Text style={styles.goal}>Goal: {dailyGoal} steps</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('StepHistory')}>
+              <Text style={styles.historyIcon}>📊</Text>
+            </TouchableOpacity>
+          </View>
         </>
       )}
     </View>
@@ -127,69 +102,55 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16, color: '#444',
   },
+  goalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+    width: '90%',
+  },
   goal: {
-    marginTop: 10, fontSize: 16, color: '#555', fontWeight: 'bold',
+    fontSize: 16,
+    color: '#555',
+    fontWeight: 'bold',
   },
-  historyButton: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#0e4d92',
-    borderRadius: 8,
+  historyIcon: {
+    fontSize: 22,
+    color: '#0e4d92',
+    borderRadius: 20,
   },
-  historyText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
- goalRow: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginTop: 10,
-  width: '90%',
-},
-
-goal: {
-  fontSize: 16,
-  color: '#555',
-  fontWeight: 'bold',
-},
-
-historyIcon: {
-  fontSize: 22,
-  color: '#fff',
-  borderRadius: 20,
-  overflow: 'hidden',
-},
-
-
 });
-
-
-
-
 
 
 // import React, { useEffect, useState } from 'react';
 // import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 // import { Pedometer } from 'expo-sensors';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { AnimatedCircularProgress } from 'react-native-circular-progress';
 // import { useNavigation } from '@react-navigation/native';
 
 // export default function StepCounterScreen() {
 //   const [stepCount, setStepCount] = useState(0);
 //   const [isAvailable, setIsAvailable] = useState('checking');
-//   const navigation = useNavigation();
+//   const navigation = useNavigation(); // ✅ correct hook used here
 
 //   const dailyGoal = 10000;
+//   const today = new Date().toISOString().split('T')[0];
 
 //   useEffect(() => {
 //     checkPedometer();
-//     fetchSteps();
+//     loadTodaySteps();
 
-//     // Refresh steps every 5 seconds (background sensor data)
-//     const interval = setInterval(fetchSteps, 5000);
-//     return () => clearInterval(interval);
+//     const subscription = Pedometer.watchStepCount(result => {
+//       setStepCount(prev => prev + result.steps);
+//     });
+
+//     return () => subscription.remove();
 //   }, []);
+
+//   useEffect(() => {
+//     saveTodaySteps();
+//   }, [stepCount]);
 
 //   const checkPedometer = async () => {
 //     try {
@@ -200,16 +161,35 @@ historyIcon: {
 //     }
 //   };
 
-//   const fetchSteps = async () => {
-//     const now = new Date();
-//     const midnight = new Date();
-//     midnight.setHours(0, 0, 0, 0);
-
+//   const loadTodaySteps = async () => {
 //     try {
-//       const result = await Pedometer.getStepCountAsync(midnight, now);
-//       setStepCount(result.steps);
-//     } catch (error) {
-//       console.log('Failed to get step count:', error);
+//       const stored = await AsyncStorage.getItem('stepHistory');
+//       if (stored) {
+//         const parsed = JSON.parse(stored);
+//         const todayEntry = parsed.find(entry => entry.date === today);
+//         if (todayEntry) setStepCount(todayEntry.steps);
+//       }
+//     } catch (e) {
+//       console.log('Failed to load step history:', e);
+//     }
+//   };
+
+//   const saveTodaySteps = async () => {
+//     try {
+//       const stored = await AsyncStorage.getItem('stepHistory');
+//       let updated = [];
+
+//       if (stored) {
+//         const parsed = JSON.parse(stored);
+//         const filtered = parsed.filter(entry => entry.date !== today);
+//         updated = [...filtered, { date: today, steps: stepCount }];
+//       } else {
+//         updated = [{ date: today, steps: stepCount }];
+//       }
+
+//       await AsyncStorage.setItem('stepHistory', JSON.stringify(updated));
+//     } catch (e) {
+//       console.log('Failed to save step history:', e);
 //     }
 //   };
 
@@ -241,12 +221,13 @@ historyIcon: {
 //             )}
 //           </AnimatedCircularProgress>
 
-//           <View style={styles.goalRow}>
-//             <Text style={styles.goal}>Goal: {dailyGoal} steps</Text>
-//             <TouchableOpacity onPress={() => navigation.navigate('StepHistory')}>
-//               <Text style={styles.historyIcon}>📊</Text>
-//             </TouchableOpacity>
-//           </View>
+//         <View style={styles.goalRow}>
+//   <Text style={styles.goal}>Goal: {dailyGoal} steps</Text>
+//   <TouchableOpacity onPress={() => navigation.navigate('StepHistory')}>
+//     <Text style={styles.historyIcon}>📊</Text>
+//   </TouchableOpacity>
+// </View>
+
 //         </>
 //       )}
 //     </View>
@@ -270,22 +251,45 @@ historyIcon: {
 //   subtitle: {
 //     fontSize: 16, color: '#444',
 //   },
-//   goalRow: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//     marginTop: 10,
-//     width: '90%',
-//   },
 //   goal: {
-//     fontSize: 16,
-//     color: '#555',
-//     fontWeight: 'bold',
+//     marginTop: 10, fontSize: 16, color: '#555', fontWeight: 'bold',
 //   },
-//   historyIcon: {
-//     fontSize: 22,
-//     color: '#0e4d92',
-//     borderRadius: 20,
-//     overflow: 'hidden',
+//   historyButton: {
+//     marginTop: 20,
+//     padding: 10,
+//     backgroundColor: '#0e4d92',
+//     borderRadius: 8,
 //   },
+//   historyText: {
+//     color: '#fff',
+//     fontWeight: '600',
+//   },
+//  goalRow: {
+//   flexDirection: 'row',
+//   justifyContent: 'space-between',
+//   alignItems: 'center',
+//   marginTop: 10,
+//   width: '90%',
+// },
+
+// goal: {
+//   fontSize: 16,
+//   color: '#555',
+//   fontWeight: 'bold',
+// },
+
+// historyIcon: {
+//   fontSize: 22,
+//   color: '#fff',
+//   borderRadius: 20,
+//   overflow: 'hidden',
+// },
+
+
 // });
+
+
+
+
+
+

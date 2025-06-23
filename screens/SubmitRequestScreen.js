@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   TextInput,
-  Button,
   Alert,
   StyleSheet,
   Text,
@@ -11,17 +10,34 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { getUserId } from '../utils/userId'; // Adjust path if needed
 
 export default function SubmitRequestScreen({ navigation, isAdmin }) {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [requests, setRequests] = useState([]);
   const [loadingRequests, setLoadingRequests] = useState(false);
-  const userId = 'user123'; // Replace dynamically
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchIdAndRequests = async () => {
+      const id = await getUserId();
+      setUserId(id);
+      if (id) {
+        fetchUserRequests(id);
+      }
+    };
+    fetchIdAndRequests();
+  }, []);
 
   const handleSubmit = async () => {
     if (!content.trim()) {
       Alert.alert('⚠️ Required', 'Please enter your plan details.');
+      return;
+    }
+
+    if (!userId) {
+      Alert.alert('❌ Error', 'User ID not available.');
       return;
     }
 
@@ -40,15 +56,51 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
       if (response.ok) {
         Alert.alert('✅ Submitted', 'Your plan has been sent for review.');
         setContent('');
-        fetchUserRequests();
+        fetchUserRequests(userId);
       } else {
         throw new Error(data.error || 'Something went wrong.');
       }
     } catch (err) {
       Alert.alert('❌ Error', err.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
+
+  const handleDeleteAll = async () => {
+  Alert.alert('Delete All Plans', 'Are you sure you want to delete all plans?', [
+    { text: 'Cancel', style: 'cancel' },
+    {
+      text: 'Delete All',
+      style: 'destructive',
+      onPress: async () => {
+        try {
+          setLoading(true);
+          const res = await fetch(
+            'https://backend-calorieai.netlify.app/.netlify/functions/deleteAllRequests',
+            {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId }),
+            }
+          );
+          const data = await res.json();
+          if (res.ok) {
+            Alert.alert('🗑 Cleared', 'All your plans were deleted.');
+            fetchUserRequests();
+          } else {
+            throw new Error(data.error || 'Delete all failed');
+          }
+        } catch (err) {
+          Alert.alert('❌ Error', err.message);
+        } finally {
+          setLoading(false);
+        }
+      },
+    },
+  ]);
+};
+  // Function to handle individual plan deletion
 
   const handleDelete = async (id) => {
     Alert.alert('Delete Plan', 'Are you sure you want to delete this plan?', [
@@ -70,7 +122,7 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
             const data = await res.json();
             if (res.ok) {
               Alert.alert('🗑 Deleted', 'Plan deleted successfully.');
-              fetchUserRequests();
+              fetchUserRequests(userId);
             } else {
               throw new Error(data.error || 'Delete failed');
             }
@@ -84,11 +136,11 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
     ]);
   };
 
-  const fetchUserRequests = async () => {
+  const fetchUserRequests = async (id) => {
     try {
       setLoadingRequests(true);
       const res = await fetch(
-        `https://backend-calorieai.netlify.app/.netlify/functions/getUserRequests?userId=${userId}`
+        `https://backend-calorieai.netlify.app/.netlify/functions/getUserRequests?userId=${id}`
       );
       const data = await res.json();
       setRequests(data);
@@ -99,45 +151,40 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
     }
   };
 
-  useEffect(() => {
-    fetchUserRequests();
-  }, []);
+  const renderRequest = ({ item }) => (
+    <View style={styles.card}>
+      <Text style={styles.planText}>{item.content}</Text>
 
- const renderRequest = ({ item }) => (
-  <View style={styles.card}>
-    <Text style={styles.planText}>{item.content}</Text>
+      <View style={styles.statusRow}>
+        <Text
+          style={[
+            styles.status,
+            item.status === 'approved' && { color: 'green' },
+            item.status === 'rejected' && { color: 'red' },
+          ]}
+        >
+          {item.status?.toUpperCase() || 'PENDING'}
+        </Text>
 
-    <View style={styles.statusRow}>
-      <Text
-        style={[
-          styles.status,
-          item.status === 'approved' && { color: 'green' },
-          item.status === 'rejected' && { color: 'red' },
-        ]}
-      >
-        {item.status?.toUpperCase() || 'PENDING'}
+        {item.status === 'pending' && (
+          <TouchableOpacity onPress={() => handleDelete(item._id)}>
+            <Icon name="delete" size={20} color="red" />
+          </TouchableOpacity>
+        )}
+      </View>
+
+      <Text style={styles.date}>
+        📅 {new Date(item.createdAt).toLocaleString()}
       </Text>
 
-      {item.status === 'pending' && (
-        <TouchableOpacity onPress={() => handleDelete(item._id)}>
-          <Icon name="delete" size={20} color="red" />
-        </TouchableOpacity>
+      {item.status === 'approved' && item.answer && (
+        <View style={styles.answerBox}>
+          <Text style={styles.answerLabel}>Admin Reply:</Text>
+          <Text style={styles.answerText}>{item.answer}</Text>
+        </View>
       )}
     </View>
-
-    <Text style={styles.date}>
-      📅 {new Date(item.createdAt).toLocaleString()}
-    </Text>
-
-    {item.status === 'approved' && item.answer && (
-      <View style={styles.answerBox}>
-        <Text style={styles.answerLabel}>Admin Reply:</Text>
-        <Text style={styles.answerText}>{item.answer}</Text>
-      </View>
-    )}
-  </View>
-);
-
+  );
 
   return (
     <View style={styles.container}>
@@ -169,7 +216,14 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
         </TouchableOpacity>
       )}
 
-      <Text style={styles.sectionTitle}>📋 My Submitted Plans</Text>
+      <View style={styles.headerRow}>
+  <Text style={styles.sectionTitle}>📋 My Submitted Plans</Text>
+  <TouchableOpacity onPress={handleDeleteAll}>
+    <Icon name="delete" size={24} color="red" />
+  </TouchableOpacity>
+</View>
+
+
 
       {loadingRequests ? (
         <ActivityIndicator size="small" color="#555" />
@@ -280,19 +334,24 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   answerBox: {
-  marginTop: 8,
-  padding: 10,
-  backgroundColor: '#f0f8ff',
-  borderRadius: 8,
-},
-answerLabel: {
-  fontWeight: '600',
-  marginBottom: 4,
-  color: '#333',
-},
-answerText: {
-  color: '#444',
-  fontSize: 14,
-},
-
+    marginTop: 8,
+    padding: 10,
+    backgroundColor: '#f0f8ff',
+    borderRadius: 8,
+  },
+  answerLabel: {
+    fontWeight: '600',
+    marginBottom: 4,
+    color: '#333',
+  },
+  answerText: {
+    color: '#444',
+    fontSize: 14,
+  },
+  headerRow: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 10,
+}
 });
