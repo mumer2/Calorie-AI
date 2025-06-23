@@ -10,29 +10,28 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function AdminLoginScreen({ navigation, setIsAdmin }) {
-  const [password, setPassword] = useState('');
+export default function AdminLoginScreen({ navigation }) {
+  const [code, setCode] = useState('');
 
   const handleLogin = async () => {
-    if (password === 'admin123') {
+    if (code === '1234') {
       await AsyncStorage.setItem('isAdmin', 'true');
-      setIsAdmin(true);
-      Alert.alert('✅ Welcome!', 'Admin access granted');
-      navigation.replace('SubmitRequest');
+      Alert.alert('✅ Logged in', 'Welcome Admin!');
+      navigation.navigate('ReviewRequest'); // or wherever your admin screen is
     } else {
-      Alert.alert('❌ Access Denied', 'Incorrect admin password');
+      Alert.alert('❌ Invalid Code', 'Please try again');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Enter Admin Password</Text>
+      <Text style={styles.title}>Enter Admin Code</Text>
       <TextInput
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
+        value={code}
+        onChangeText={setCode}
+        placeholder="Enter secret code"
         style={styles.input}
+        secureTextEntry
       />
       <TouchableOpacity onPress={handleLogin} style={styles.button}>
         <Text style={styles.buttonText}>Login</Text>
@@ -42,17 +41,17 @@ export default function AdminLoginScreen({ navigation, setIsAdmin }) {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 24, marginTop: 40 },
-  label: { fontSize: 18, marginBottom: 10 },
+  container: { flex: 1, padding: 24, justifyContent: 'center' },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
   input: {
-    borderColor: '#ccc',
     borderWidth: 1,
+    borderColor: '#ccc',
     padding: 12,
-    borderRadius: 6,
-    marginBottom: 20,
+    borderRadius: 8,
+    marginBottom: 16,
   },
   button: {
-    backgroundColor: '#333',
+    backgroundColor: '#0e4d92',
     padding: 14,
     borderRadius: 10,
     alignItems: 'center',

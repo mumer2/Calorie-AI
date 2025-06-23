@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   TextInput,
@@ -7,11 +7,15 @@ import {
   StyleSheet,
   Text,
   ActivityIndicator,
+  FlatList,
 } from 'react-native';
 
 export default function SubmitRequestScreen({ navigation, isAdmin }) {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
+  const [requests, setRequests] = useState([]);
+  const [loadingRequests, setLoadingRequests] = useState(false);
+  const userId = 'user123'; // Replace this dynamically if needed
 
   const handleSubmit = async () => {
     if (!content.trim()) {
@@ -30,7 +34,7 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            userId: 'user123', // You can replace this with real user ID
+            userId,
             type: 'mealPlan',
             content,
           }),
@@ -42,6 +46,7 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
       if (response.ok) {
         Alert.alert('✅ Submitted', 'Your plan has been sent for review.');
         setContent('');
+        fetchUserRequests(); // refresh after submit
       } else {
         throw new Error(data.error || 'Something went wrong.');
       }
@@ -51,6 +56,37 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
 
     setLoading(false);
   };
+
+  const fetchUserRequests = async () => {
+    try {
+      setLoadingRequests(true);
+      const res = await fetch(
+        `https://backend-calorieai.netlify.app/.netlify/functions/getUserRequests?userId=${userId}`
+      );
+      const data = await res.json();
+      setRequests(data);
+    } catch (err) {
+      Alert.alert('❌ Failed to fetch requests', err.message);
+    } finally {
+      setLoadingRequests(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserRequests();
+  }, []);
+
+  const renderRequest = ({ item }) => (
+    <View style={styles.card}>
+      <Text style={styles.planText}>{item.content}</Text>
+      <Text style={styles.status}>
+        🟢 {item.status?.toUpperCase() || 'PENDING'}
+      </Text>
+      <Text style={styles.date}>
+        📅 {new Date(item.createdAt).toLocaleString()}
+      </Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -79,6 +115,23 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
           />
         </View>
       )}
+
+      <Text style={styles.sectionTitle}>📋 My Submitted Plans</Text>
+
+      {loadingRequests ? (
+        <ActivityIndicator size="small" color="#555" />
+      ) : (
+        <FlatList
+          data={requests}
+          keyExtractor={(item) => item._id}
+          renderItem={renderRequest}
+          ListEmptyComponent={
+            <Text style={{ textAlign: 'center', marginTop: 10, color: '#888' }}>
+              No submitted plans yet.
+            </Text>
+          }
+        />
+      )}
     </View>
   );
 }
@@ -104,5 +157,31 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontWeight: 'bold',
     color: '#333',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    marginTop: 30,
+    marginBottom: 10,
+    fontWeight: '600',
+    color: '#555',
+  },
+  card: {
+    backgroundColor: '#f0f0f0',
+    padding: 12,
+    marginVertical: 6,
+    borderRadius: 8,
+  },
+  planText: {
+    fontSize: 15,
+    marginBottom: 6,
+  },
+  status: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#007B00',
+  },
+  date: {
+    fontSize: 12,
+    color: '#888',
   },
 });
