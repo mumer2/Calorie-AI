@@ -26,6 +26,9 @@ import TrainingDetailScreen from "./screens/TrainingDetailScreen";
 import ProgressReportScreen from "./screens/ProgressReportScreen";
 import JitsiScreen from "./screens/JitsiScreen";
 import AIChatScreen from "./screens/AIChatScreen";
+import AdminLoginScreen from "./screens/AdminLoginScreen";
+import ReviewRequestsScreen from "./screens/ReviewRequestsScreen";
+import SubmitRequestScreen from "./screens/SubmitRequestScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -59,6 +62,13 @@ function MainTabs() {
 export default function App() {
   const [name, setName] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    AsyncStorage.getItem('isAdmin').then((val) => {
+      if (val === 'true') setIsAdmin(true);
+    });
+  }, []);
 
   useEffect(() => {
     const loadName = async () => {
@@ -108,6 +118,17 @@ export default function App() {
               />
               <Stack.Screen name="Jitsi" component={JitsiScreen} />
               <Stack.Screen name="AIChat" component={AIChatScreen} />
+
+
+
+               {isAdmin && (
+          <Stack.Screen name="ReviewRequests" component={ReviewRequestsScreen} />
+        )}
+
+              <Stack.Screen name="AdminLogin" component={AdminLoginScreen} />
+              <Stack.Screen name="SubmitRequest" component={SubmitRequestScreen} />
+              <Stack.Screen name="ReviewRequest" component={ReviewRequestsScreen} />
+
 
             </>
           )}

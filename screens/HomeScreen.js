@@ -187,6 +187,11 @@ export default function HomeScreen({ navigation }) {
       image: require("../assets/live-chat.png"),
       screen: "AIChat",
     },
+     {
+      title: "Submit Request",
+      image: require("../assets/classroom.png"),
+      screen: "SubmitRequest",
+    },
   ];
 
   return (
@@ -315,6 +320,24 @@ export default function HomeScreen({ navigation }) {
 
 <View style={styles.row}>
             {collections.slice(6,8).map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.card,
+                  styles.halfCard,
+                  index === 1 && { marginRight: 0 },
+                ]}
+                onPress={() => handleNavigate(item.screen)}
+              >
+                <Image source={item.image} style={styles.cardImageTop} />
+                <Text style={styles.cardTextCentered}>
+                  {item.title} {item.screen === "Subscribe" ? "🔒" : ""}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <View style={styles.row}>
+            {collections.slice(8).map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={[

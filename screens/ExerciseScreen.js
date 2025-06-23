@@ -1,41 +1,52 @@
 
 
-import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { Video } from 'expo-av';
+import { Asset } from 'expo-asset';
 
-// Removed AsyncStorage and navigation
-
-const exercises = [
+const rawExercises = [
   {
     name: 'Squats',
-    video: require('../assets/videos/Squats.mp4'),
+    file: require('../assets/videos/Squats.mp4'),
     duration: '15 reps',
   },
   {
     name: 'Push-ups',
-    video: require('../assets/videos/PushUps.mp4'),
+    file: require('../assets/videos/PushUps.mp4'),
     duration: '12 reps',
   },
   {
     name: 'Plank',
-    video: require('../assets/videos/Planks.mp4'),
+    file: require('../assets/videos/Planks.mp4'),
     duration: '45 sec',
   },
   {
     name: 'Jumping Jacks',
-    video: require('../assets/videos/JumpingJacks.mp4'),
+    file: require('../assets/videos/JumpingJacks.mp4'),
     duration: '30 sec',
   },
 ];
 
 export default function ExerciseScreen() {
+  const [exercises, setExercises] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const loaded = await Promise.all(
+        rawExercises.map(async (ex) => {
+          const asset = Asset.fromModule(ex.file);
+          await asset.downloadAsync(); //forces asset into the local file system
+          return {
+            ...ex,
+            uri: asset.localUri,
+          };
+        })
+      );
+      setExercises(loaded);
+    })();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>🏋️ Daily Workout</Text>
@@ -43,14 +54,14 @@ export default function ExerciseScreen() {
       {exercises.map((exercise, idx) => (
         <View key={idx} style={styles.card}>
           <Video
-            source={exercise.video}
+            source={{ uri: exercise.uri }}
             rate={1.0}
             volume={1.0}
             isMuted={false}
-            resizeMode="cover"
+            resizeMode="fit"
             shouldPlay
             isLooping
-            useNativeControls
+           
             style={styles.video}
           />
           <View style={styles.textBox}>
@@ -105,6 +116,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 });
+
 
 // import React, { useEffect, useState } from 'react';
 // import {
