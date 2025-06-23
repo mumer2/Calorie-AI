@@ -189,7 +189,7 @@ export default function HomeScreen({ navigation }) {
     },
      {
       title: "Submit Request",
-      image: require("../assets/classroom.png"),
+      image: require("../assets/ask-question.png"),
       screen: "SubmitRequest",
     },
   ];

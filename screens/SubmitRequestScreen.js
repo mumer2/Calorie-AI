@@ -8,14 +8,16 @@ import {
   Text,
   ActivityIndicator,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function SubmitRequestScreen({ navigation, isAdmin }) {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [requests, setRequests] = useState([]);
   const [loadingRequests, setLoadingRequests] = useState(false);
-  const userId = 'user123'; // Replace this dynamically if needed
+  const userId = 'user123'; // Replace dynamically
 
   const handleSubmit = async () => {
     if (!content.trim()) {
@@ -24,37 +26,62 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
     }
 
     setLoading(true);
-
     try {
       const response = await fetch(
         'https://backend-calorieai.netlify.app/.netlify/functions/submitRequest',
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            type: 'mealPlan',
-            content,
-          }),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, type: 'mealPlan', content }),
         }
       );
 
       const data = await response.json();
-
       if (response.ok) {
         Alert.alert('✅ Submitted', 'Your plan has been sent for review.');
         setContent('');
-        fetchUserRequests(); // refresh after submit
+        fetchUserRequests();
       } else {
         throw new Error(data.error || 'Something went wrong.');
       }
     } catch (err) {
       Alert.alert('❌ Error', err.message);
     }
-
     setLoading(false);
+  };
+
+  const handleDelete = async (id) => {
+    Alert.alert('Delete Plan', 'Are you sure you want to delete this plan?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            setLoading(true);
+            const res = await fetch(
+              'https://backend-calorieai.netlify.app/.netlify/functions/deleteRequest',
+              {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id }),
+              }
+            );
+            const data = await res.json();
+            if (res.ok) {
+              Alert.alert('🗑 Deleted', 'Plan deleted successfully.');
+              fetchUserRequests();
+            } else {
+              throw new Error(data.error || 'Delete failed');
+            }
+          } catch (err) {
+            Alert.alert('❌ Error', err.message);
+          } finally {
+            setLoading(false);
+          }
+        },
+      },
+    ]);
   };
 
   const fetchUserRequests = async () => {
@@ -76,44 +103,70 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
     fetchUserRequests();
   }, []);
 
-  const renderRequest = ({ item }) => (
-    <View style={styles.card}>
-      <Text style={styles.planText}>{item.content}</Text>
-      <Text style={styles.status}>
-        🟢 {item.status?.toUpperCase() || 'PENDING'}
+ const renderRequest = ({ item }) => (
+  <View style={styles.card}>
+    <Text style={styles.planText}>{item.content}</Text>
+
+    <View style={styles.statusRow}>
+      <Text
+        style={[
+          styles.status,
+          item.status === 'approved' && { color: 'green' },
+          item.status === 'rejected' && { color: 'red' },
+        ]}
+      >
+        {item.status?.toUpperCase() || 'PENDING'}
       </Text>
-      <Text style={styles.date}>
-        📅 {new Date(item.createdAt).toLocaleString()}
-      </Text>
+
+      {item.status === 'pending' && (
+        <TouchableOpacity onPress={() => handleDelete(item._id)}>
+          <Icon name="delete" size={20} color="red" />
+        </TouchableOpacity>
+      )}
     </View>
-  );
+
+    <Text style={styles.date}>
+      📅 {new Date(item.createdAt).toLocaleString()}
+    </Text>
+
+    {item.status === 'approved' && item.answer && (
+      <View style={styles.answerBox}>
+        <Text style={styles.answerLabel}>Admin Reply:</Text>
+        <Text style={styles.answerText}>{item.answer}</Text>
+      </View>
+    )}
+  </View>
+);
+
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Submit Your Plan</Text>
+      <Text style={styles.title}>Submit Your Request</Text>
 
       <TextInput
-        placeholder="Enter plan details..."
+        placeholder="Enter your plan details..."
         value={content}
         onChangeText={setContent}
         multiline
         style={styles.input}
+        placeholderTextColor="#aaa"
       />
 
       {loading ? (
         <ActivityIndicator size="large" color="#007AFF" />
       ) : (
-        <Button title="Submit" onPress={handleSubmit} />
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.submitButtonText}>Submit</Text>
+        </TouchableOpacity>
       )}
 
       {isAdmin && (
-        <View style={{ marginTop: 20 }}>
-          <Button
-            title="Review Requests (Admin)"
-            onPress={() => navigation.navigate('ReviewRequests')}
-            color="#444"
-          />
-        </View>
+        <TouchableOpacity
+          style={styles.adminButton}
+          onPress={() => navigation.navigate('ReviewRequests')}
+        >
+          <Text style={styles.adminButtonText}>Review Requests (Admin)</Text>
+        </TouchableOpacity>
       )}
 
       <Text style={styles.sectionTitle}>📋 My Submitted Plans</Text>
@@ -125,10 +178,9 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
           data={requests}
           keyExtractor={(item) => item._id}
           renderItem={renderRequest}
+          contentContainerStyle={{ paddingBottom: 40 }}
           ListEmptyComponent={
-            <Text style={{ textAlign: 'center', marginTop: 10, color: '#888' }}>
-              No submitted plans yet.
-            </Text>
+            <Text style={styles.emptyText}>No submitted plans yet.</Text>
           }
         />
       )}
@@ -138,41 +190,78 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 24,
+    padding: 20,
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFA',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#222',
+    marginBottom: 16,
+    textAlign: 'center',
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 12,
-    borderRadius: 6,
-    marginBottom: 16,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    fontSize: 16,
     height: 120,
     textAlignVertical: 'top',
+    marginBottom: 16,
+  },
+  submitButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontWeight: '600',
     fontSize: 16,
   },
-  title: {
-    fontSize: 22,
-    marginBottom: 10,
-    fontWeight: 'bold',
-    color: '#333',
+  adminButton: {
+    backgroundColor: '#444',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  adminButtonText: {
+    color: '#fff',
+    fontWeight: '500',
+    fontSize: 15,
   },
   sectionTitle: {
-    fontSize: 18,
-    marginTop: 30,
-    marginBottom: 10,
+    fontSize: 20,
     fontWeight: '600',
-    color: '#555',
+    color: '#333',
+    marginBottom: 10,
   },
   card: {
-    backgroundColor: '#f0f0f0',
-    padding: 12,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 14,
     marginVertical: 6,
-    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
   },
   planText: {
     fontSize: 15,
+    color: '#333',
+    marginBottom: 8,
+  },
+  statusRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 6,
   },
   status: {
@@ -184,4 +273,26 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#888',
   },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#999',
+  },
+  answerBox: {
+  marginTop: 8,
+  padding: 10,
+  backgroundColor: '#f0f8ff',
+  borderRadius: 8,
+},
+answerLabel: {
+  fontWeight: '600',
+  marginBottom: 4,
+  color: '#333',
+},
+answerText: {
+  color: '#444',
+  fontSize: 14,
+},
+
 });
