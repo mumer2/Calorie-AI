@@ -27,33 +27,36 @@ export default function SubscribeScreen({ navigation }) {
       setLoading(true);
 
       const response = await fetch(
-        'https://calorie-ai-production.up.railway.app/create-payment-intent',
+        'https://backend-calorieai.netlify.app/.netlify/functions/payment',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            amount: 19900, // ¥199.00
-            currency: 'cny', // Alipay supports only 'cny' or 'hkd'
+            amount: 19900, // ¥199.00 in cents
+            currency: 'cny', // Alipay supports cny or hkd
           }),
         }
       );
 
       const data = await response.json();
+      console.log('Stripe response:', data);
 
-      if (!data || !data.clientSecret || !data.nextActionUrl) {
-        throw new Error('Invalid response from server');
-      }
+    if (!data || !data.nextActionUrl) {
+  throw new Error('Invalid response from server');
+}
 
-      const result = await WebBrowser.openBrowserAsync(data.nextActionUrl);
+const result = await WebBrowser.openBrowserAsync(data.nextActionUrl);
 
-      if (result.type === 'opened') {
-        Alert.alert('Payment Initiated', 'Complete the payment in the Alipay page.');
+      if (result.type === 'dismiss') {
+        // Browser closed — assume payment is complete
         await AsyncStorage.setItem('isSubscribed', 'true');
         setIsSubscribed(true);
+        Alert.alert('Payment Complete', 'Thank you for subscribing!');
+        navigation.replace('Home');
       }
     } catch (error) {
-      console.error(error);
-      Alert.alert('Payment Failed', 'Something went wrong. Please try again.');
+      console.error('Payment error:', error);
+      Alert.alert('Payment Failed', error.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }

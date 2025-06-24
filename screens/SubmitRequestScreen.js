@@ -53,6 +53,12 @@ export default function SubmitRequestScreen({ navigation, isAdmin }) {
       );
 
       const data = await response.json();
+      // 🛑 Check for daily submission limit
+    if (response.status === 409) {
+      Alert.alert('⛔ Limit Reached', data.error); // "You can only submit one request per day."
+      setLoading(false);
+      return;
+    }
       if (response.ok) {
         Alert.alert('✅ Submitted', 'Your plan has been sent for review.');
         setContent('');
