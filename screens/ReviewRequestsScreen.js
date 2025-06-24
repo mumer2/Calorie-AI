@@ -140,6 +140,9 @@ export default function ReviewRequestsScreen() {
 
   return (
     <>
+     <View style={styles.title}>
+            <Text style={{ fontSize: 20,fontWeight:'bold',color:'#0e4d92' }}>Review the Requests</Text>
+          </View>
       <FlatList
         data={requests}
         keyExtractor={(item) => item._id}
@@ -173,6 +176,10 @@ export default function ReviewRequestsScreen() {
 }
 
 const styles = StyleSheet.create({
+  title: {
+    padding: 30,
+    alignItems: 'center',
+  },
   card: {
     backgroundColor: '#f5f5f5',
     padding: 16,

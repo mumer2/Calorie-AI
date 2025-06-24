@@ -7,24 +7,54 @@ import { Asset } from 'expo-asset';
 
 const rawExercises = [
   {
-    name: 'Squats',
-    file: require('../assets/videos/Squats.mp4'),
-    duration: '15 reps',
+    name: 'Jumping Jacks',
+    file: require("../assets/videos/JumpingJacks.mp4"),
+    duration: '20 sec',
   },
   {
-    name: 'Push-ups',
-    file: require('../assets/videos/PushUps.mp4'),
+    name: 'Abdominal Crunches',
+    file: require('../assets/videos/AbdominalCrunches.mp4'),
     duration: '12 reps',
   },
   {
-    name: 'Plank',
-    file: require('../assets/videos/Planks.mp4'),
-    duration: '45 sec',
+    name: 'Russian Twists',
+    file: require('../assets/videos/RussianTwist.mp4'),
+    duration: '20 reps',
   },
   {
-    name: 'Jumping Jacks',
-    file: require('../assets/videos/JumpingJacks.mp4'),
-    duration: '30 sec',
+    name: 'Mountain Climbers',
+    file: require('../assets/videos/MountainClimber.mp4'),
+    duration: '20 reps',
+  },
+   {
+    name: 'Heel Touches',
+    file: require('../assets/videos/HeelTouch.mp4'),
+    duration: '20 reps',
+  },
+   {
+    name: 'Leg Raises',
+    file: require('../assets/videos/LegRaises.mp4'),
+    duration: '18 reps',
+  },
+   {
+    name: 'Plank',
+    file: require('../assets/videos/Plank.mp4'),
+    duration: '20 sec',
+  },
+   {
+    name: 'Push Ups',
+    file: require("../assets/videos/PushUps.mp4"),
+    duration: '12 reps',
+  },
+   {
+    name: 'Wide Arm Push Ups',
+    file: require("../assets/videos/WideArmPushUps.mp4"),
+    duration: '12 reps',
+  },
+   {
+    name: 'Cobra Stretch',
+    file: require("../assets/videos/CobraStretch.mp4"),
+    duration: '20 sec',
   },
 ];
 
@@ -58,7 +88,7 @@ export default function ExerciseScreen() {
             rate={1.0}
             volume={1.0}
             isMuted={false}
-            resizeMode="fit"
+            resizeMode="cover"
             shouldPlay
             isLooping
            
@@ -97,9 +127,10 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   video: {
-    width: width - 40,
-    height: (width - 40) * 0.6,
+   width: '100%',
+    height: 200,
     borderRadius: 10,
+    marginTop: 12,
   },
   textBox: {
     marginTop: 10,

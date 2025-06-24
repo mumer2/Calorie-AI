@@ -152,7 +152,7 @@ export default function HomeScreen({ navigation }) {
     //   screen: isSubscribed ? "Diet" : "Subscribe",
     // },
     {
-  title: "Daily Exercise",
+  title: "Daily Workout",
   image: require("../assets/exercise.png"),
   screen: "Exercise", // 🔓 Always accessible
 },

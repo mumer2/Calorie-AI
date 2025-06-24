@@ -18,7 +18,7 @@ import fullBodyCover from '../assets/trainings/ExercisePlan.jpeg';
 import walkCover from '../assets/trainings/WalkingGuide.jpeg';
 
 export default function TrainingDetailScreen({ route, navigation }) {
-  const { title, steps, duration, image, videoPreview } = route.params;
+  const { title, steps, duration,stepsduration, image, videoPreview } = route.params;
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [videoPreviewUri, setVideoPreviewUri] = useState(null);
   const [loadedSteps, setLoadedSteps] = useState([]);
@@ -97,6 +97,7 @@ export default function TrainingDetailScreen({ route, navigation }) {
           Step {currentStepIndex + 1} of {loadedSteps.length}
         </Text>
         <Text style={styles.stepText}>{currentStep.text}</Text>
+        <Text style={styles.duration}>⏱ {currentStep.stepsduration}</Text>
 
         {currentStep.videoUri && (
           <Video
