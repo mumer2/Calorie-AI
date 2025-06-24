@@ -81,7 +81,7 @@ const result = await WebBrowser.openBrowserAsync(data.nextActionUrl);
           <>
             <Text style={styles.title}>Unlock Premium Access</Text>
             <Text style={styles.subtitle}>
-              Get daily workouts & diet plans tailored for you.
+             Enjoy expert-designed workout routines and custom diet guidance.
             </Text>
             <TouchableOpacity
               style={[styles.button, loading && styles.buttonDisabled]}

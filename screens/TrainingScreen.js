@@ -16,25 +16,53 @@ const trainingModules = [
   {
     id: '1',
     title: '🦵 Leg Exercise',
-    duration: '15 mins',
+    duration: '25 mins',
     previewImage: require('../assets//trainings/Leg.jpeg'),
     description: 'Strengthen and tone your legs with guided routines.',
     steps: [
       {
-        text: 'Do 15 squats slowly',
-        video: require('../assets/videos/Planks.mp4'),
+        text: 'Stand on the floor, put your hands in front of you and do 16 Hops from side to side',
+        video: require('../assets/videos/SideHop.mp4'),
       },
       {
-        text: 'Perform 20 lunges (10 per leg)',
-        video: require('../assets/videos/PushUps.mp4'),
+        text: 'Stand with feet shoulder-width apart, lower into a squat and do 12 Squats',
+        video: require('../assets/videos/Squats2.mp4'),
       },
       {
-        text: '10 calf raises on a step',
-        video: require('../assets/videos/Squats.mp4'),
+        text: 'Lie on your left side, lift your right leg up and do 16 Side Lying Leg Lifts',
+        video: require('../assets/videos/SideLyingLegLiftLeft3.mp4'),
       },
       {
-        text: 'Hold a wall sit for 30 seconds',
-        video: require('../assets/videos/JumpingJacks.mp4'),
+        text: 'Lie on your right side, lift your left leg up and do 16 Side Lying Leg Lifts',
+        video: require('../assets/videos/SideLyingLegLiftRight4.mp4'),
+      },
+      {
+        text: 'Stand with feet together, step back with your right leg and do 10 Reverse Lunges',
+        video: require('../assets/videos/BackwardLounge5.mp4'),
+      },
+      {
+        text: 'Lie on your left side, lift your right leg up and do 12 Side Lying Leg Lifts',
+        video: require('../assets/videos/DonkeyKicksLeft6.mp4'),
+      },
+      {
+        text: 'Lie on your right side, lift your left leg up and do 12 Side Lying Leg Lifts',
+        video: require('../assets/videos/DonkeyKicksRight7.mp4'),
+      },
+      {
+        text: 'Stand with your back against a wall, bend your Left knees and hold for 30 seconds',
+        video: require('../assets/videos/LeftQuadStretchWithWall8.mp4'),
+      },
+      {
+        text: 'Stand with your back against a wall, bend your Right knees and hold for 30 seconds',
+        video: require('../assets/videos/RightQuadStretchWithWall9.mp4'),
+      },
+      {
+        text: 'Lie on your left side, lift your right leg up and do 16 Side Lying Leg Lifts',
+        video: require('../assets/videos/KneeToChestStretchLeft10.mp4'),
+      },
+       {
+        text: 'Lie on your right side, lift your left leg up and do 16 Side Lying Leg Lifts ',
+        video: require('../assets/videos/KneeToChestStretchRight11.mp4'),
       },
     ],
   },

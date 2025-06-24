@@ -102,12 +102,11 @@ export default function TrainingDetailScreen({ route, navigation }) {
           <Video
             source={{ uri: currentStep.videoUri }}
             style={styles.stepVideo}
-            resizeMode="fit"
+            resizeMode="cover"
             isLooping
             shouldPlay
             isMuted={false}
-            useNativeControls
-          />
+                      />
         )}
 
         {currentStep.image && (
