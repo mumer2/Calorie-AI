@@ -8,7 +8,8 @@ import { StripeProvider } from "@stripe/stripe-react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 // Screens
-import OnboardingScreen from "./screens/OnboardingScreen";
+import LoginScreen from "./screens/LoginScreen";
+import SignupScreen from "./screens/SignupScreen";
 import HomeScreen from "./screens/HomeScreen";
 import FitnessScreen from "./screens/FitnessScreen";
 import DietPlanScreen from "./screens/DietPlanScreen";
@@ -29,11 +30,11 @@ import AIChatScreen from "./screens/AIChatScreen";
 import AdminLoginScreen from "./screens/AdminLoginScreen";
 import ReviewRequestsScreen from "./screens/ReviewRequestsScreen";
 import SubmitRequestScreen from "./screens/SubmitRequestScreen";
+import CoachHomeScreen from "./screens/CoachHomeScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Tabs navigator
 function MainTabs() {
   return (
     <Tab.Navigator
@@ -60,26 +61,19 @@ function MainTabs() {
 }
 
 export default function App() {
-  const [name, setName] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [userToken, setUserToken] = useState(null);
+  const [userRole, setUserRole] = useState(null); // 'member', 'coach', 'admin'
 
   useEffect(() => {
-    AsyncStorage.getItem('isAdmin').then((val) => {
-      if (val === 'true') setIsAdmin(true);
-    });
-  }, []);
-
-  useEffect(() => {
-    const loadName = async () => {
-      const storedName = await AsyncStorage.getItem("userName");
-      setName(storedName);
+    const checkAuth = async () => {
+      const token = await AsyncStorage.getItem("authToken");
+      const role = await AsyncStorage.getItem("userRole");
+      setUserToken(token);
+      setUserRole(role);
       setLoading(false);
     };
-    loadName();
-
-    const interval = setInterval(loadName, 1000);
-    return () => clearInterval(interval);
+    checkAuth();
   }, []);
 
   if (loading) return null;
@@ -87,51 +81,30 @@ export default function App() {
   return (
     <StripeProvider publishableKey="pk_test_51RZ5xeD1MsDkTkjjPUM3jGl7wZMhXlkiF4iGc5Jdey3SvcpmtmT2TcucP00QLjHd97wCI38RM35noeM1UO3GPqTa00YrvE9E0e">
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {!name ? (
-            <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-          ) : (
-            <>
-              <Stack.Screen name="MainTabs" component={MainTabs} />
-              <Stack.Screen name="Fitness" component={FitnessScreen} />
-              <Stack.Screen name="Diet" component={DietPlanScreen} />
-              <Stack.Screen name="Exercise" component={ExerciseScreen} />
-              <Stack.Screen name="Subscribe" component={SubscribeScreen} />
-              <Stack.Screen name="Steps" component={StepCounterScreen} />
-              <Stack.Screen name="Reminders" component={ReminderScreen} />
-              <Stack.Screen name="StepHistory" component={StepsHistoryScreen} />
-              <Stack.Screen name="Training" component={TrainingScreen} />
-              <Stack.Screen
-                name="TrainingDetail"
-                component={TrainingDetailScreen}
-                options={{ title: "Training Detail" }}
-              />
-              <Stack.Screen
-                name="TrainingVideo"
-                component={TrainingVideoScreen}
-              />
-
-              <Stack.Screen
-                name="ProgressReport"
-                component={ProgressReportScreen}
-                options={{ title: "Progress Report" }}
-              />
-              <Stack.Screen name="Jitsi" component={JitsiScreen} />
-              <Stack.Screen name="AIChat" component={AIChatScreen} />
-
-
-
-               {isAdmin && (
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={userToken ? "MainTabs" : "Login"}>
+          {/* Public Screens */}
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Signup" component={SignupScreen} />
+          {/* Authenticated User Screens */}
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+          <Stack.Screen name="CoachHome" component={CoachHomeScreen} />
+          <Stack.Screen name="Fitness" component={FitnessScreen} />
+          <Stack.Screen name="Diet" component={DietPlanScreen} />
+          <Stack.Screen name="Exercise" component={ExerciseScreen} />
+          <Stack.Screen name="Subscribe" component={SubscribeScreen} />
+          <Stack.Screen name="Steps" component={StepCounterScreen} />
+          <Stack.Screen name="Reminders" component={ReminderScreen} />
+          <Stack.Screen name="StepHistory" component={StepsHistoryScreen} />
+          <Stack.Screen name="Training" component={TrainingScreen} />
+          <Stack.Screen name="TrainingDetail" component={TrainingDetailScreen} />
+          <Stack.Screen name="TrainingVideo" component={TrainingVideoScreen} />
+          <Stack.Screen name="ProgressReport" component={ProgressReportScreen} />
+          <Stack.Screen name="Jitsi" component={JitsiScreen} />
+          <Stack.Screen name="AIChat" component={AIChatScreen} />
+          <Stack.Screen name="AdminLogin" component={AdminLoginScreen} />
+          <Stack.Screen name="SubmitRequest" component={SubmitRequestScreen} />
           <Stack.Screen name="ReviewRequests" component={ReviewRequestsScreen} />
-        )}
-
-              <Stack.Screen name="AdminLogin" component={AdminLoginScreen} />
-              <Stack.Screen name="SubmitRequest" component={SubmitRequestScreen} />
-              <Stack.Screen name="ReviewRequest" component={ReviewRequestsScreen} />
-
-
-            </>
-          )}
+   
         </Stack.Navigator>
       </NavigationContainer>
     </StripeProvider>

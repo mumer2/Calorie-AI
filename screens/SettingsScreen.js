@@ -1,4 +1,3 @@
-// ✅ screens/SettingsScreen.js
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -24,9 +23,23 @@ export default function SettingsScreen({ navigation }) {
     Alert.alert('✅ Saved', 'Your name has been updated');
   };
 
-  const handleAdminLogin = () => {
-    navigation.navigate('AdminLogin');
-  };
+  // const handleAdminLogin = () => {
+  //   navigation.navigate('AdminLogin');
+  // };
+
+  const handleLogout = async () => {
+  try {
+    await AsyncStorage.multiRemove(['authToken', 'userRole', 'userName']);
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  } catch (error) {
+    Alert.alert('Logout Error', 'Something went wrong.');
+  }
+};
+
 
   return (
     <View style={styles.container}>
@@ -45,8 +58,12 @@ export default function SettingsScreen({ navigation }) {
 
       <View style={styles.divider} />
 
-      <TouchableOpacity onPress={handleAdminLogin} style={styles.adminButton}>
+      {/* <TouchableOpacity onPress={handleAdminLogin} style={styles.adminButton}>
         <Text style={styles.adminButtonText}>Login as Admin</Text>
+      </TouchableOpacity> */}
+
+      <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+        <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
     </View>
   );
@@ -69,19 +86,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: { color: '#fff', fontWeight: 'bold' },
-  divider: { marginVertical: 20, borderBottomWidth: 1, borderColor: '#ccc' },
+  divider: {
+    marginVertical: 20,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+  },
   adminButton: {
     backgroundColor: '#555',
     padding: 14,
     borderRadius: 10,
     alignItems: 'center',
+    marginBottom: 12,
   },
   adminButtonText: {
     color: '#fff',
     fontWeight: 'bold',
     letterSpacing: 0.5,
   },
+  logoutButton: {
+    backgroundColor: '#b00020',
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
 });
+
 
 
 // import React, { useEffect, useState } from 'react';
