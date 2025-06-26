@@ -190,7 +190,7 @@ export default function TrainingScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>📚 Training Modules</Text>
+      <Text style={styles.header}>Workout Modules</Text>
       <FlatList
         data={trainingModules}
         keyExtractor={(item) => item.id}

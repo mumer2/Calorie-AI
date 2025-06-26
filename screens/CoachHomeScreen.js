@@ -78,6 +78,14 @@ export default function CoachHomeScreen({ navigation }) {
           <Ionicons name="eye-outline" size={32} color="#0e4d92" />
           <Text style={styles.cardText}>Review Requests</Text>
         </TouchableOpacity>
+         <TouchableOpacity
+          style={styles.card}
+          onPress={() => navigation.navigate('CoachLiveScreen')}
+        >
+          <Ionicons name="camera" size={32} color="#0e4d92" />
+          <Text style={styles.cardText}>Join Live Video</Text>
+        </TouchableOpacity>
+        
       </View>
     </View>
   );
@@ -146,6 +154,7 @@ const styles = StyleSheet.create({
     padding: 12,
     width: 150,
     elevation: 4,
+    marginTop:'50',
   },
   menuItem: {
     flexDirection: 'row',

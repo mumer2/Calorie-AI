@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 
 // Screens
 import LoginScreen from "./screens/LoginScreen";
@@ -28,10 +28,13 @@ import TrainingDetailScreen from "./screens/TrainingDetailScreen";
 import ProgressReportScreen from "./screens/ProgressReportScreen";
 import JitsiScreen from "./screens/JitsiScreen";
 import AIChatScreen from "./screens/AIChatScreen";
+import ReviewRequestsScreen from "./screens/ReviewRequestsScreen";
 import CoachHomeScreen from "./screens/CoachHomeScreen";
 import CoachListScreen from "./screens/CoachListScreen";
 import CoachProfileScreen from "./screens/CoachProfileScreen";
 import SendRequestScreen from "./screens/SendRequestScreen";
+import CoachVideoListScreen from "./screens/CoachVideoListScreen";
+import CoachLiveScreen from "./screens/CoachLiveScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -82,7 +85,10 @@ export default function App() {
   return (
     <StripeProvider publishableKey="pk_test_51RZ5xeD1MsDkTkjjPUM3jGl7wZMhXlkiF4iGc5Jdey3SvcpmtmT2TcucP00QLjHd97wCI38RM35noeM1UO3GPqTa00YrvE9E0e">
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={userToken ? "MainTabs" : "Login"}>
+        <Stack.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName={userToken ? "MainTabs" : "Login"}
+        >
           {/* Public Screens */}
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Signup" component={SignupScreen} />
@@ -97,15 +103,27 @@ export default function App() {
           <Stack.Screen name="Reminders" component={ReminderScreen} />
           <Stack.Screen name="StepHistory" component={StepsHistoryScreen} />
           <Stack.Screen name="Training" component={TrainingScreen} />
-          <Stack.Screen name="TrainingDetail" component={TrainingDetailScreen} />
+          <Stack.Screen
+            name="TrainingDetail"
+            component={TrainingDetailScreen}
+          />
           <Stack.Screen name="TrainingVideo" component={TrainingVideoScreen} />
-          <Stack.Screen name="ProgressReport" component={ProgressReportScreen} />
+          <Stack.Screen
+            name="ProgressReport"
+            component={ProgressReportScreen}
+          />
           <Stack.Screen name="Jitsi" component={JitsiScreen} />
           <Stack.Screen name="AIChat" component={AIChatScreen} />
+          <Stack.Screen
+            name="ReviewRequests"
+            component={ReviewRequestsScreen}
+          />
           <Stack.Screen name="CoachList" component={CoachListScreen} />
-<Stack.Screen name="CoachProfile" component={CoachProfileScreen} />
-<Stack.Screen name="SendRequest" component={SendRequestScreen} />
-   
+          <Stack.Screen name="CoachProfile" component={CoachProfileScreen} />
+          <Stack.Screen name="SendRequest" component={SendRequestScreen} />
+          <Stack.Screen name="CoachVideoList" component={CoachVideoListScreen} />
+          <Stack.Screen name="CoachLiveScreen" component={CoachLiveScreen} />
+
         </Stack.Navigator>
       </NavigationContainer>
     </StripeProvider>

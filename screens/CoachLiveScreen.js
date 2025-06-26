@@ -1,20 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Linking, Alert, Platform } from 'react-native';
+import { View, StyleSheet, Alert, Platform } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { Camera } from 'expo-camera';
 import { Audio } from 'expo-av';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function JitsiScreen({ route }) {
+export default function CoachLiveScreen() {
   const [hasPermissions, setHasPermissions] = useState(false);
-  const { coach } = route.params || {};
+  const [coach, setCoach] = useState(null);
 
   useEffect(() => {
-    if (!coach) {
-      Alert.alert('❌ No coach selected.');
-      return;
-    }
-
     (async () => {
+      // Get logged-in coach's data from storage
+      const userId = await AsyncStorage.getItem('userId');
+      const userName = await AsyncStorage.getItem('userName');
+      const userRole = await AsyncStorage.getItem('userRole');
+
+      if (userRole !== 'coach') {
+        Alert.alert('Access Denied', 'Only coaches can join this live session.');
+        return;
+      }
+
+      if (!userId || !userName) {
+        Alert.alert('Error', 'Coach info not found.');
+        return;
+      }
+
+      setCoach({ _id: userId, name: userName });
+
       const { status: camStatus } = await Camera.requestCameraPermissionsAsync();
       const { status: micStatus } = await Audio.requestPermissionsAsync();
 
@@ -27,15 +40,12 @@ export default function JitsiScreen({ route }) {
         );
       }
     })();
-  }, [coach]);
+  }, []);
 
   const handleNavigation = (event) => {
     const { url } = event;
 
-    if (url.startsWith('intent://') || url.includes('external')) {
-      return false;
-    }
-
+    if (url.startsWith('intent://') || url.includes('external')) return false;
     if (!url.startsWith('https://meet.jit.si')) {
       Linking.openURL(url);
       return false;
@@ -44,18 +54,15 @@ export default function JitsiScreen({ route }) {
     return true;
   };
 
-  // Build dynamic meeting URL using coach ID and name
-  const displayName = coach?.name || 'Coach';
-  const roomName = `CalorieAI-Coach-${coach?._id || 'Unknown'}`;
-  const encodedName = encodeURIComponent(displayName);
-
-  const url = `https://meet.jit.si/${roomName}#config.disableDeepLinking=true&config.prejoinPageEnabled=false&userInfo.displayName="${encodedName}"`;
+  const roomName = coach ? `CalorieAI-Coach-${coach._id}` : '';
+  const encodedName = encodeURIComponent(coach?.name || 'Coach');
+  const jitsiUrl = `https://meet.jit.si/${roomName}#config.disableDeepLinking=true&config.prejoinPageEnabled=false&userInfo.displayName="${encodedName}"`;
 
   return (
     <View style={styles.container}>
-      {hasPermissions && (
+      {hasPermissions && coach && (
         <WebView
-          source={{ uri: url }}
+          source={{ uri: jitsiUrl }}
           javaScriptEnabled
           domStorageEnabled
           allowsInlineMediaPlayback
@@ -76,6 +83,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
-    marginTop: Platform.OS === 'android' ? 24 : 0, // Adjust for status bar on Android
+    marginTop: Platform.OS === 'android' ? 24 : 0,
   },
 });

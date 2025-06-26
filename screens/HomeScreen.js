@@ -168,7 +168,7 @@ export default function HomeScreen({ navigation }) {
       screen: "Reminders",
     },
       {
-      title: "Trainings",
+      title: "Workout Guide",
       image: require("../assets/classroom.png"),
       screen: "Training",
     },
@@ -180,7 +180,7 @@ export default function HomeScreen({ navigation }) {
     {
       title: "Live Video",
       image: require("../assets/live.png"),
-      screen: "Jitsi",
+      screen: "CoachVideoList",
     },
      {
       title: "AI Chat",
