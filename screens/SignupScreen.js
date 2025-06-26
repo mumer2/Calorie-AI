@@ -18,11 +18,28 @@ export default function SignupScreen({ navigation }) {
   const [role, setRole] = useState('member');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*\d).{6,}$/;
+
     if (!name.trim() || !email.trim() || !password.trim()) {
       return Alert.alert('Error', 'All fields are required');
     }
+
+    if (!emailRegex.test(email.trim())) {
+      return Alert.alert('Invalid Email', 'Please enter a valid email address');
+    }
+
+    if (!passwordRegex.test(password)) {
+      return Alert.alert(
+        'Weak Password',
+        'Password must be at least 6 characters and include at least one digit'
+      );
+    }
+
+    setLoading(true);
 
     try {
       const response = await fetch(SIGNUP_URL, {
@@ -38,8 +55,11 @@ export default function SignupScreen({ navigation }) {
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (response.ok && data.userId) {
         await AsyncStorage.setItem('userName', name.trim());
+        await AsyncStorage.setItem('userId', data.userId);
+        await AsyncStorage.setItem('userRole', role);
+
         Alert.alert('Success', 'Account created. Please login.');
         navigation.replace('Login');
       } else {
@@ -48,6 +68,8 @@ export default function SignupScreen({ navigation }) {
     } catch (error) {
       console.error('Signup error:', error);
       Alert.alert('Error', 'Could not connect to server');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,9 +111,18 @@ export default function SignupScreen({ navigation }) {
           value={password}
           onChangeText={setPassword}
         />
+        <Text style={styles.hintText}>
+          Password must be at least 6 characters and include a number.
+        </Text>
 
-        <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <Text style={styles.buttonText}>Sign Up</Text>
+        <TouchableOpacity
+          style={[styles.button, loading && { opacity: 0.6 }]}
+          onPress={handleSignup}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>
+            {loading ? 'Signing Up...' : 'Sign Up'}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -132,18 +163,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 16,
+    gap: 16,
   },
   selected: {
+    backgroundColor: '#e6f0ff',
+    padding: 6,
+    borderRadius: 8,
     color: '#0e4d92',
     fontWeight: 'bold',
     fontSize: 16,
-    marginHorizontal: 12,
-    textDecorationLine: 'underline',
   },
   unselected: {
     color: '#888',
+    padding: 6,
     fontSize: 16,
-    marginHorizontal: 12,
   },
   input: {
     borderWidth: 1,
@@ -154,12 +187,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafafa',
     marginBottom: 14,
   },
+  hintText: {
+    color: '#888',
+    fontSize: 12,
+    marginBottom: 10,
+    marginLeft: 4,
+  },
   button: {
     backgroundColor: '#0e4d92',
     paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 6,
   },
   buttonText: {
     color: '#fff',

@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from 'react-native-toast-message';
 
 // Screens
 import LoginScreen from "./screens/LoginScreen";
@@ -27,10 +28,10 @@ import TrainingDetailScreen from "./screens/TrainingDetailScreen";
 import ProgressReportScreen from "./screens/ProgressReportScreen";
 import JitsiScreen from "./screens/JitsiScreen";
 import AIChatScreen from "./screens/AIChatScreen";
-import AdminLoginScreen from "./screens/AdminLoginScreen";
-import ReviewRequestsScreen from "./screens/ReviewRequestsScreen";
-import SubmitRequestScreen from "./screens/SubmitRequestScreen";
 import CoachHomeScreen from "./screens/CoachHomeScreen";
+import CoachListScreen from "./screens/CoachListScreen";
+import CoachProfileScreen from "./screens/CoachProfileScreen";
+import SendRequestScreen from "./screens/SendRequestScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -101,9 +102,9 @@ export default function App() {
           <Stack.Screen name="ProgressReport" component={ProgressReportScreen} />
           <Stack.Screen name="Jitsi" component={JitsiScreen} />
           <Stack.Screen name="AIChat" component={AIChatScreen} />
-          <Stack.Screen name="AdminLogin" component={AdminLoginScreen} />
-          <Stack.Screen name="SubmitRequest" component={SubmitRequestScreen} />
-          <Stack.Screen name="ReviewRequests" component={ReviewRequestsScreen} />
+          <Stack.Screen name="CoachList" component={CoachListScreen} />
+<Stack.Screen name="CoachProfile" component={CoachProfileScreen} />
+<Stack.Screen name="SendRequest" component={SendRequestScreen} />
    
         </Stack.Navigator>
       </NavigationContainer>

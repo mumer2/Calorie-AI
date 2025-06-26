@@ -187,10 +187,10 @@ export default function HomeScreen({ navigation }) {
       image: require("../assets/live-chat.png"),
       screen: "AIChat",
     },
-     {
-      title: "Submit Request",
+    {
+      title: "Send Request To Coach",
       image: require("../assets/ask-question.png"),
-      screen: "SubmitRequest",
+      screen: "CoachList",
     },
   ];
 
