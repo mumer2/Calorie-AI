@@ -35,6 +35,8 @@ import CoachProfileScreen from "./screens/CoachProfileScreen";
 import SendRequestScreen from "./screens/SendRequestScreen";
 import CoachVideoListScreen from "./screens/CoachVideoListScreen";
 import CoachLiveScreen from "./screens/CoachLiveScreen";
+import CoinsRewardScreen from "./screens/CoinsRewardScreen";
+import RedeemScreen from "./screens/RedeemScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -123,6 +125,9 @@ export default function App() {
           <Stack.Screen name="SendRequest" component={SendRequestScreen} />
           <Stack.Screen name="CoachVideoList" component={CoachVideoListScreen} />
           <Stack.Screen name="CoachLiveScreen" component={CoachLiveScreen} />
+          <Stack.Screen name="CoinsReward" component={CoinsRewardScreen} />
+          <Stack.Screen name="RedeemScreen" component={RedeemScreen} />
+
 
         </Stack.Navigator>
       </NavigationContainer>

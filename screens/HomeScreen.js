@@ -19,12 +19,11 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import StepCounterScreen from "./StepCounterScreen";
 
-
 const STEP_GOAL = 10000;
 const { width } = Dimensions.get("window");
 
 export default function HomeScreen({ navigation }) {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [steps, setSteps] = useState(0);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showSubscriptionMenu, setShowSubscriptionMenu] = useState(false);
@@ -141,10 +140,10 @@ export default function HomeScreen({ navigation }) {
       image: require("../assets/fitness.png"),
       screen: "Fitness",
     },
-      {
+    {
       title: "Diet Plan",
       image: require("../assets/diet.png"),
-      screen:  "Diet" ,
+      screen: "Diet",
     },
     // {
     //   title: "Diet Plan",
@@ -152,10 +151,10 @@ export default function HomeScreen({ navigation }) {
     //   screen: isSubscribed ? "Diet" : "Subscribe",
     // },
     {
-  title: "Daily Workout",
-  image: require("../assets/exercise.png"),
-  screen: "Exercise", // 🔓 Always accessible
-},
+      title: "Daily Workout",
+      image: require("../assets/exercise.png"),
+      screen: "Exercise", // 🔓 Always accessible
+    },
 
     // {
     //   title: "Daily Exercise",
@@ -167,12 +166,12 @@ export default function HomeScreen({ navigation }) {
       image: require("../assets/Reminder.png"),
       screen: "Reminders",
     },
-      {
+    {
       title: "Workout Guide",
       image: require("../assets/classroom.png"),
       screen: "Training",
     },
-     {
+    {
       title: "Progress Report",
       image: require("../assets/progress-report.png"),
       screen: "ProgressReport",
@@ -182,7 +181,7 @@ export default function HomeScreen({ navigation }) {
       image: require("../assets/live.png"),
       screen: "CoachVideoList",
     },
-     {
+    {
       title: "AI Chat",
       image: require("../assets/live-chat.png"),
       screen: "AIChat",
@@ -201,9 +200,13 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.topBar}>
           <Text style={styles.topBarText}>👋 Hi, {name || "Guest"}</Text>
           <View style={styles.topRightControls}>
-            {/* <TouchableOpacity onPress={resetName} style={{ marginRight: 12 }}>
-              <MaterialIcons name="refresh" size={24} color="#0e4d92" />
-            </TouchableOpacity> */}
+            <TouchableOpacity
+              style={styles.coinTab}
+              onPress={() => navigation.navigate("CoinsReward")}
+            >
+              <Text style={styles.coinTabText}>🪙</Text>
+            </TouchableOpacity>
+
             <View>
               <TouchableOpacity onPress={handleToggleSubscriptionMenu}>
                 <MaterialIcons
@@ -261,26 +264,24 @@ export default function HomeScreen({ navigation }) {
               </TouchableOpacity>
             ))}
           </View>
-<View style={styles.row}>
-  {collections.slice(2, 4).map((item, index) => (
-    <TouchableOpacity
-      key={index}
-      style={[
-        styles.card,
-        styles.halfCard,
-        index === 1 && { marginRight: 0 },
-      ]}
-      onPress={() => handleNavigate(item.screen)} // 🔓 No restriction now
-    >
-      <Image source={item.image} style={styles.cardImageTop} />
-      <Text style={styles.cardTextCentered}>
-        {item.title}
-      </Text>
-    </TouchableOpacity>
-  ))}
-</View>
+          <View style={styles.row}>
+            {collections.slice(2, 4).map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.card,
+                  styles.halfCard,
+                  index === 1 && { marginRight: 0 },
+                ]}
+                onPress={() => handleNavigate(item.screen)} // 🔓 No restriction now
+              >
+                <Image source={item.image} style={styles.cardImageTop} />
+                <Text style={styles.cardTextCentered}>{item.title}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
- {/* <View style={styles.row}>
+          {/* <View style={styles.row}>
             {collections.slice(2,4).map((item, index) => (
               <TouchableOpacity
                 key={index}
@@ -298,8 +299,8 @@ export default function HomeScreen({ navigation }) {
               </TouchableOpacity>
             ))}
           </View> */}
- <View style={styles.row}>
-            {collections.slice(4,6).map((item, index) => (
+          <View style={styles.row}>
+            {collections.slice(4, 6).map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={[
@@ -317,9 +318,8 @@ export default function HomeScreen({ navigation }) {
             ))}
           </View>
 
-
-<View style={styles.row}>
-            {collections.slice(6,8).map((item, index) => (
+          <View style={styles.row}>
+            {collections.slice(6, 8).map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={[
@@ -425,6 +425,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 14,
+  },
+  coinTab: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+  },
+  coinTabText: {
+    fontWeight: "bold",
+    fontSize: 18,
   },
   card: {
     backgroundColor: "#ffffff",
