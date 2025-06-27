@@ -112,7 +112,7 @@ export default function HomeScreen({ navigation }) {
 
   const handleSubscribe = () => {
     setShowSubscriptionMenu(false);
-    navigation.navigate("Subscribe");
+    navigation.navigate("WeChatPay");
   };
 
   const handleUnsubscribe = () => {
@@ -434,6 +434,7 @@ const styles = StyleSheet.create({
   coinTabText: {
     fontWeight: "bold",
     fontSize: 18,
+    marginBottom: 3,
   },
   card: {
     backgroundColor: "#ffffff",

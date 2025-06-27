@@ -10,6 +10,7 @@ import SubscribeScreen from '../screens/SubscribeScreen';
 import LegExerciseScreen from '../screens/LegExerciseScreen';
 import ExerciseCompleted from '../screens/ExerciseCompleted';
 import TrainingDetailScreen from '../screens/TrainingDetailScreen';
+import WeChatPayScreen from '../screens/WeChatPayScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,9 @@ export default function AppNavigator() {
         <Stack.Screen name="Diet" component={DietScreen} />
         <Stack.Screen name="Exercise" component={ExerciseScreen} />
         <Stack.Screen name="Subscribe" component={SubscribeScreen} />
+        <Stack.Screen name="WeChatPay" component={WeChatPayScreen} />
+
+
          <Stack.Screen name="LegExercise" component={LegExerciseScreen} options={{ title: 'Leg Workout' }} />
   <Stack.Screen name="ExerciseCompleted" component={ExerciseCompleted} options={{ headerShown: false }} />
      <Stack.Screen

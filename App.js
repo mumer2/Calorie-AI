@@ -37,6 +37,7 @@ import CoachVideoListScreen from "./screens/CoachVideoListScreen";
 import CoachLiveScreen from "./screens/CoachLiveScreen";
 import CoinsRewardScreen from "./screens/CoinsRewardScreen";
 import RedeemScreen from "./screens/RedeemScreen";
+import WeChatPayScreen from "./screens/WeChatPayScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -127,6 +128,8 @@ export default function App() {
           <Stack.Screen name="CoachLiveScreen" component={CoachLiveScreen} />
           <Stack.Screen name="CoinsReward" component={CoinsRewardScreen} />
           <Stack.Screen name="RedeemScreen" component={RedeemScreen} />
+          <Stack.Screen name="WeChatPay" component={WeChatPayScreen} />
+
 
 
         </Stack.Navigator>
