@@ -1,0 +1,60 @@
+{
+  "expo": {
+    "name": "Calorie AI",
+    "slug": "calorie-ai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "assetBundlePatterns": ["**/*", "assets/videos/*"],
+    "splash": {
+      "image": "./assets/Logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.calorieai.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/Logo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "ACTIVITY_RECOGNITION",
+        "INTERNET",
+        "CAMERA",
+        "ACTIVITY_RECOGNITION",
+        "INTERNET",
+        "CAMERA",
+        "NOTIFICATIONS",
+        "WAKE_LOCK",
+        "RECORD_AUDIO"
+      ],
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "068168ac-f7a3-4108-bb48-dd09aa99e918"
+      }
+    },
+    "plugins": [
+      "expo-web-browser",
+      "expo-video",
+      "expo-notifications",
+      "expo-localization",
+      "expo-audio"
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/068168ac-f7a3-4108-bb48-dd09aa99e918"
+    },
+    "owner": "m_umer_m"
+  }
+}
